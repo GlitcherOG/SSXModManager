@@ -1,4 +1,5 @@
 ﻿using DiscUtils.Iso9660;
+using SSX_Library;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -52,10 +53,28 @@ namespace SSXModManagerWinForm
             }
 
             //Extract Levels
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MEGAPLEX.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MERQUERY.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MESA.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\PIPE.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\SNOW.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\WARMUP.BIG", BackupGameFolder);
 
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MEGAPLEX.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MERQUERY.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MESA.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\PIPE.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\SNOW.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\WARMUP.BIG");
 
             //Copy to Active Game Folder
-
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
         //SSX Tricky US
@@ -103,7 +122,34 @@ namespace SSXModManagerWinForm
             }
 
             //Extract Levels
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\GARI.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MEGAPLE.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MERQUER.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\MESA.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\PIPE.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\SNOW.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\SSXFE.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\TRICK.BIG", BackupGameFolder);
+            BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG", BackupGameFolder);
+
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\GARI.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MEGAPLE.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MERQUER.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\MESA.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\PIPE.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\SNOW.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\SSXFE.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\TRICK.BIG");
+            File.Delete(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG");
+
             //Extract to Active Game Folder
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
         //SSX 3 US
@@ -137,6 +183,21 @@ namespace SSXModManagerWinForm
             memoryStream.Dispose();
             file.Close();
 
+        }
+
+        private static void CopyFilesRecursively(string sourcePath, string targetPath)
+        {
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }
         }
     }
 }
