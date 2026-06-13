@@ -1,5 +1,6 @@
 ﻿using DiscUtils.Iso9660;
 using SSX_Library;
+using SSXLibrary.FileHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,18 +9,51 @@ namespace SSXModManagerWinForm
 {
     public class GameSetup
     {
+        public static void CheckDisk(string LoadPath)
+        {
+            string crc = "";
+
+            using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
+            {
+                CDReader cd = new CDReader(isoStream, true);
+                string[] Files = cd.GetFiles("", "*.*", SearchOption.TopDirectoryOnly);
+
+                int SystemCNF = Files.IndexOf("\\SYSTEM.CNF;1");
+
+                var CDFile = cd.OpenFile(Files[SystemCNF], FileMode.Open);
+
+                using var reader = new StreamReader(CDFile);
+                CDFile.Position = 0; // rewind first
+                string text = reader.ReadToEnd();
+
+                string[] Lines = text.Split("\r\n");
+
+                string Path = Lines[0].Replace("BOOT2=cdrom0:","");
+
+                int ELFPath = Files.IndexOf(Path);
+
+                CDFile = cd.OpenFile(Files[ELFPath], FileMode.Open);
+
+                crc = CRCCalculator.CalculateCRC32(CDFile);
+            }
+
+            if (crc == "8E7CFF62")
+            {
+                ExtractSSXTrickyPS2(LoadPath);
+            }
+        }
+
+
         //SSX OG US
         public static void ExtractSSXOGPS2(string LoadPath)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + "\\SSXOG\\";
+            string BackupGameFolder = Backup + "\\SSX OG\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + "\\SSXOG\\";
+            string GameFolder = GamesFolders + "\\SSX OG\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = GamesFolders + "\\SSX OG\\";
 
-            if (!Directory.Exists(Backup))
-            {
-                Directory.CreateDirectory(Backup);
-            }
             if (!Directory.Exists(BackupGameFolder))
             {
                 Directory.CreateDirectory(BackupGameFolder);
@@ -27,10 +61,6 @@ namespace SSXModManagerWinForm
             if (!Directory.Exists(GamesFolders))
             {
                 Directory.CreateDirectory(GamesFolders);
-            }
-            if (!Directory.Exists(GameFolder))
-            {
-                Directory.CreateDirectory(GameFolder);
             }
 
             //Extract to Backup
@@ -81,25 +111,23 @@ namespace SSXModManagerWinForm
         public static void ExtractSSXTrickyPS2(string LoadPath)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + "\\SSXTricky\\";
+            string BackupGameFolder = Backup + "\\SSX Tricky\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + "\\SSXTricky\\";
+            string GameFolder = GamesFolders + "\\SSX Tricky\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = GamesFolders + "\\SSX Tricky\\";
 
-            if (!Directory.Exists(Backup))
-            {
-                Directory.CreateDirectory(Backup);
-            }
             if (!Directory.Exists(BackupGameFolder))
             {
                 Directory.CreateDirectory(BackupGameFolder);
             }
-            if (!Directory.Exists(GamesFolders))
-            {
-                Directory.CreateDirectory(GamesFolders);
-            }
             if (!Directory.Exists(GameFolder))
             {
                 Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
             }
 
             //Extract to Backup
@@ -157,6 +185,38 @@ namespace SSXModManagerWinForm
         {
             //Extract to Backup
             //Extract Character Models
+
+            //var TempboltPS2 = new BoltPS2Handler();
+            //TempboltPS2.load(openFileDialog.FileName);
+            //for (int i = 0; i < TempboltPS2.characters.Count; i++)
+            //{
+            //    var TempCharacter = TempboltPS2.characters[i];
+            //    for (int a = 0; a < TempCharacter.entries.Count; a++)
+            //    {
+            //        var TempEntries = TempCharacter.entries[a];
+
+            //        if (TempEntries.ModelPath != null)
+            //        {
+            //            if (TempEntries.ModelPath.ToLower().Contains(".big|"))
+            //            {
+            //                TempEntries.ModelPath = TempEntries.ModelPath.ToLower().Replace(".big|", "/");
+            //            }
+            //        }
+
+            //        if (TempEntries.TexturePath != null)
+            //        {
+            //            if (TempEntries.TexturePath.ToLower().Contains(".big|"))
+            //            {
+            //                TempEntries.TexturePath = TempEntries.TexturePath.ToLower().Replace(".big|", "/");
+            //            }
+            //        }
+            //        TempCharacter.entries[a] = TempEntries;
+            //    }
+            //    TempboltPS2.characters[i] = TempCharacter;
+            //}
+
+            //TempboltPS2.Save(openFileDialog.FileName);
+
             //Extract to Active Game Folder
         }
 

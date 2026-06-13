@@ -33,23 +33,24 @@
             button2 = new Button();
             button3 = new Button();
             hScrollBar1 = new HScrollBar();
-            toolStripComboBox2 = new ToolStripComboBox();
+            ConsoleSelection = new ToolStripComboBox();
             GameSelection = new ToolStripComboBox();
             toolStripSeparator1 = new ToolStripSeparator();
             toolStripButton4 = new ToolStripButton();
             toolStrip1 = new ToolStrip();
+            toolStripButton1 = new ToolStripButton();
             checkedListBox1 = new CheckedListBox();
             tabPage2 = new TabPage();
             tabPage1 = new TabPage();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
             pictureBox1 = new PictureBox();
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
-            label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
             toolStrip1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -90,19 +91,21 @@
             hScrollBar1.Size = new Size(80, 17);
             hScrollBar1.TabIndex = 0;
             // 
-            // toolStripComboBox2
+            // ConsoleSelection
             // 
-            toolStripComboBox2.Alignment = ToolStripItemAlignment.Right;
-            toolStripComboBox2.Items.AddRange(new object[] { "PS2" });
-            toolStripComboBox2.Name = "toolStripComboBox2";
-            toolStripComboBox2.Size = new Size(121, 25);
+            ConsoleSelection.Alignment = ToolStripItemAlignment.Right;
+            ConsoleSelection.DropDownStyle = ComboBoxStyle.DropDownList;
+            ConsoleSelection.Items.AddRange(new object[] { "PS2" });
+            ConsoleSelection.Name = "ConsoleSelection";
+            ConsoleSelection.Size = new Size(121, 25);
             // 
             // GameSelection
             // 
             GameSelection.Alignment = ToolStripItemAlignment.Right;
-            GameSelection.Items.AddRange(new object[] { "SSX (2000)", "SSX Tricky", "SSX 3", "SSX On Tour", "SSX Blur", "SSX (2012)" });
+            GameSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             GameSelection.Name = "GameSelection";
             GameSelection.Size = new Size(121, 25);
+            GameSelection.SelectedIndexChanged += GameSelection_SelectedIndexChanged;
             // 
             // toolStripSeparator1
             // 
@@ -122,12 +125,22 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripComboBox2, GameSelection, toolStripSeparator1, toolStripButton4 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, toolStripButton4, toolStripButton1 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1268, 25);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButton1
+            // 
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(67, 22);
+            toolStripButton1.Text = "Add Game";
+            toolStripButton1.Click += toolStripButton1_Click;
             // 
             // checkedListBox1
             // 
@@ -168,6 +181,33 @@
             tabPage1.Text = "Mod List";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(279, 94);
+            label6.Name = "label6";
+            label6.Size = new Size(38, 15);
+            label6.TabIndex = 11;
+            label6.Text = "label6";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(278, 59);
+            label5.Name = "label5";
+            label5.Size = new Size(38, 15);
+            label5.TabIndex = 10;
+            label5.Text = "label5";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(279, 21);
+            label4.Name = "label4";
+            label4.Size = new Size(38, 15);
+            label4.TabIndex = 9;
+            label4.Text = "label4";
+            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -197,9 +237,10 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(748, 6);
+            pictureBox1.BackColor = Color.Black;
+            pictureBox1.Location = new Point(706, 6);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(482, 547);
+            pictureBox1.Size = new Size(524, 547);
             pictureBox1.TabIndex = 5;
             pictureBox1.TabStop = false;
             // 
@@ -214,7 +255,6 @@
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(1244, 629);
             tabControl1.TabIndex = 5;
-            tabControl1.Visible = false;
             // 
             // tabPage3
             // 
@@ -224,33 +264,6 @@
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Settings";
             tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(279, 21);
-            label4.Name = "label4";
-            label4.Size = new Size(38, 15);
-            label4.TabIndex = 9;
-            label4.Text = "label4";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(278, 59);
-            label5.Name = "label5";
-            label5.Size = new Size(38, 15);
-            label5.TabIndex = 10;
-            label5.Text = "label5";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new Point(279, 94);
-            label6.Name = "label6";
-            label6.Size = new Size(38, 15);
-            label6.TabIndex = 11;
-            label6.Text = "label6";
             // 
             // Form1
             // 
@@ -278,7 +291,7 @@
         private Button button2;
         private Button button3;
         private HScrollBar hScrollBar1;
-        private ToolStripComboBox toolStripComboBox2;
+        private ToolStripComboBox ConsoleSelection;
         private ToolStripComboBox GameSelection;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton toolStripButton4;
@@ -295,5 +308,6 @@
         private Label label6;
         private Label label5;
         private Label label4;
+        private ToolStripButton toolStripButton1;
     }
 }
