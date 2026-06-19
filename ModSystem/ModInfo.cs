@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SSXModManagerWinForm
+namespace SSXModManagerWinForm.ModSystem
 {
     public class ModInfo
     {
@@ -13,9 +13,6 @@ namespace SSXModManagerWinForm
         public string Version;
         public string DownloadLink;
         public string[] Tags;
-
-        [Newtonsoft.Json.JsonIgnore]
-        public string Path;
 
         public void CreateListJson(string path, List<ModInfo> modInfos, bool Inline = false)
         {

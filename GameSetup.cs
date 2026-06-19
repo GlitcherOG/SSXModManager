@@ -43,7 +43,6 @@ namespace SSXModManagerWinForm
             }
         }
 
-
         //SSX OG US
         public static void ExtractSSXOGPS2(string LoadPath)
         {
@@ -52,7 +51,7 @@ namespace SSXModManagerWinForm
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
             string GameFolder = GamesFolders + "\\SSX OG\\";
             string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
-            string ModFolder = GamesFolders + "\\SSX OG\\";
+            string ModFolder = ModsFolders + "\\SSX OG\\";
 
             if (!Directory.Exists(BackupGameFolder))
             {
@@ -64,23 +63,7 @@ namespace SSXModManagerWinForm
             }
 
             //Extract to Backup
-            using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
-            {
-                CDReader cd = new CDReader(isoStream, true);
-                string[] Files = cd.GetFiles("", "*.*", SearchOption.AllDirectories);
-
-                for (int i = 0; i < Files.Length; i++)
-                {
-                    string directory = Path.GetDirectoryName(BackupGameFolder + Files[i]);
-
-                    if (!Directory.Exists(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                    }
-
-                    SaveFile(cd.OpenFile(Files[i], FileMode.Open), BackupGameFolder + Files[i].Replace(";1", ""));
-                }
-            }
+            ExtractDisk(LoadPath, BackupGameFolder);
 
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
@@ -115,7 +98,7 @@ namespace SSXModManagerWinForm
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
             string GameFolder = GamesFolders + "\\SSX Tricky\\";
             string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
-            string ModFolder = GamesFolders + "\\SSX Tricky\\";
+            string ModFolder = ModsFolders + "\\SSX Tricky\\";
 
             if (!Directory.Exists(BackupGameFolder))
             {
@@ -131,23 +114,7 @@ namespace SSXModManagerWinForm
             }
 
             //Extract to Backup
-            using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
-            {
-                CDReader cd = new CDReader(isoStream, true);
-                string[] Files = cd.GetFiles("", "*.*", SearchOption.AllDirectories);
-
-                for (int i = 0; i < Files.Length; i++)
-                {
-                    string directory = Path.GetDirectoryName(BackupGameFolder + Files[i]);
-
-                    if (!Directory.Exists(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                    }
-
-                    SaveFile(cd.OpenFile(Files[i], FileMode.Open), BackupGameFolder + Files[i].Replace(";1", ""));
-                }
-            }
+            ExtractDisk(LoadPath, BackupGameFolder);
 
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG", BackupGameFolder);
@@ -181,9 +148,31 @@ namespace SSXModManagerWinForm
         }
 
         //SSX 3 US
-        public void ExtractSSX3PS2()
+        public void ExtractSSX3PS2(string LoadPath)
         {
+            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
+            string BackupGameFolder = Backup + "\\SSX 3\\";
+            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
+            string GameFolder = GamesFolders + "\\SSX 3\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = ModsFolders + "\\SSX 3\\";
+
+            if (!Directory.Exists(BackupGameFolder))
+            {
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            if (!Directory.Exists(GameFolder))
+            {
+                Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
+            }
+
             //Extract to Backup
+            ExtractDisk(LoadPath, BackupGameFolder);
+
             //Extract Character Models
 
             //var TempboltPS2 = new BoltPS2Handler();
@@ -218,13 +207,63 @@ namespace SSXModManagerWinForm
             //TempboltPS2.Save(openFileDialog.FileName);
 
             //Extract to Active Game Folder
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
         //SSX On Tour US
+        public void ExtractSSXOnTourPS2(string LoadPath)
+        {
+            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
+            string BackupGameFolder = Backup + "\\SSX On Tour\\";
+            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
+            string GameFolder = GamesFolders + "\\SSX On Tour\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = ModsFolders + "\\SSX On Tour\\";
 
-        //SSX Blur US
+            if (!Directory.Exists(BackupGameFolder))
+            {
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            if (!Directory.Exists(GameFolder))
+            {
+                Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
+            }
+
+            //Extract to Backup
+            ExtractDisk(LoadPath, BackupGameFolder);
+
+            //Extract Character Models
+
+            //Extract to Active Game Folder
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
+        }
 
         //SSX 2012
+
+        public static void ExtractDisk(string LoadPath, string ExtractFolder)
+        {
+            using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
+            {
+                CDReader cd = new CDReader(isoStream, true);
+                string[] Files = cd.GetFiles("", "*.*", SearchOption.AllDirectories);
+
+                for (int i = 0; i < Files.Length; i++)
+                {
+                    string directory = Path.GetDirectoryName(ExtractFolder + Files[i]);
+
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    SaveFile(cd.OpenFile(Files[i], FileMode.Open), ExtractFolder + Files[i].Replace(";1", ""));
+                }
+            }
+        }
 
 
         public static void SaveFile(Stream Input, string FilePath)
