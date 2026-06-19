@@ -39,7 +39,19 @@ namespace SSXModManagerWinForm
 
             if (crc == "8E7CFF62")
             {
+                ExtractSSXOGPS2(LoadPath);
+            }
+            if (crc == "8E7CFF62")
+            {
                 ExtractSSXTrickyPS2(LoadPath);
+            }
+            if (crc == "08FFF00D")
+            {
+                ExtractSSX3PS2(LoadPath);
+            }
+            if (crc == "0F27ED9B")
+            {
+                ExtractSSXOnTourPS2(LoadPath);
             }
         }
 
@@ -148,7 +160,7 @@ namespace SSXModManagerWinForm
         }
 
         //SSX 3 US
-        public void ExtractSSX3PS2(string LoadPath)
+        public static void ExtractSSX3PS2(string LoadPath)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX 3\\";
@@ -211,7 +223,7 @@ namespace SSXModManagerWinForm
         }
 
         //SSX On Tour US
-        public void ExtractSSXOnTourPS2(string LoadPath)
+        public static void ExtractSSXOnTourPS2(string LoadPath)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX On Tour\\";
