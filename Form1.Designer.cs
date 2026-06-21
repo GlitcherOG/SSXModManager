@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             button1 = new Button();
             button2 = new Button();
-            button3 = new Button();
+            ApplyModsButton = new Button();
             hScrollBar1 = new HScrollBar();
             ConsoleSelection = new ToolStripComboBox();
             GameSelection = new ToolStripComboBox();
@@ -39,26 +39,27 @@
             toolStripButton4 = new ToolStripButton();
             toolStrip1 = new ToolStrip();
             toolStripButton1 = new ToolStripButton();
-            checkedListBox1 = new CheckedListBox();
+            ModListCheck = new CheckedListBox();
             tabPage2 = new TabPage();
             tabPage1 = new TabPage();
-            label6 = new Label();
-            label5 = new Label();
-            label4 = new Label();
+            DescriptionLabel = new Label();
+            AuthorLabel = new Label();
+            ModNameLabel = new Label();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            pictureBox1 = new PictureBox();
+            ModPicture = new PictureBox();
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
             toolStrip1.SuspendLayout();
             tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ModPicture).BeginInit();
             tabControl1.SuspendLayout();
             SuspendLayout();
             // 
             // button1
             // 
+            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             button1.Location = new Point(197, 572);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
@@ -68,6 +69,7 @@
             // 
             // button2
             // 
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             button2.Location = new Point(6, 572);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
@@ -75,14 +77,16 @@
             button2.Text = "/\\";
             button2.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // ApplyModsButton
             // 
-            button3.Location = new Point(1095, 572);
-            button3.Name = "button3";
-            button3.Size = new Size(135, 23);
-            button3.TabIndex = 4;
-            button3.Text = "Apply Mods";
-            button3.UseVisualStyleBackColor = true;
+            ApplyModsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            ApplyModsButton.Location = new Point(1095, 572);
+            ApplyModsButton.Name = "ApplyModsButton";
+            ApplyModsButton.Size = new Size(135, 23);
+            ApplyModsButton.TabIndex = 4;
+            ApplyModsButton.Text = "Apply Mods";
+            ApplyModsButton.UseVisualStyleBackColor = true;
+            ApplyModsButton.Click += ApplyModsButton_Click;
             // 
             // hScrollBar1
             // 
@@ -142,13 +146,15 @@
             toolStripButton1.Text = "Add Game";
             toolStripButton1.Click += toolStripButton1_Click;
             // 
-            // checkedListBox1
+            // ModListCheck
             // 
-            checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Location = new Point(6, 6);
-            checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(266, 562);
-            checkedListBox1.TabIndex = 1;
+            ModListCheck.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            ModListCheck.FormattingEnabled = true;
+            ModListCheck.Location = new Point(6, 6);
+            ModListCheck.Name = "ModListCheck";
+            ModListCheck.Size = new Size(266, 562);
+            ModListCheck.TabIndex = 1;
+            ModListCheck.SelectedIndexChanged += ModListCheck_SelectedIndexChanged;
             // 
             // tabPage2
             // 
@@ -162,15 +168,15 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(label6);
-            tabPage1.Controls.Add(label5);
-            tabPage1.Controls.Add(label4);
+            tabPage1.Controls.Add(DescriptionLabel);
+            tabPage1.Controls.Add(AuthorLabel);
+            tabPage1.Controls.Add(ModNameLabel);
             tabPage1.Controls.Add(label3);
             tabPage1.Controls.Add(label2);
             tabPage1.Controls.Add(label1);
-            tabPage1.Controls.Add(pictureBox1);
-            tabPage1.Controls.Add(button3);
-            tabPage1.Controls.Add(checkedListBox1);
+            tabPage1.Controls.Add(ModPicture);
+            tabPage1.Controls.Add(ApplyModsButton);
+            tabPage1.Controls.Add(ModListCheck);
             tabPage1.Controls.Add(button1);
             tabPage1.Controls.Add(button2);
             tabPage1.Location = new Point(4, 24);
@@ -181,32 +187,32 @@
             tabPage1.Text = "Mod List";
             tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // DescriptionLabel
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(279, 94);
-            label6.Name = "label6";
-            label6.Size = new Size(38, 15);
-            label6.TabIndex = 11;
-            label6.Text = "label6";
+            DescriptionLabel.AutoSize = true;
+            DescriptionLabel.Location = new Point(279, 94);
+            DescriptionLabel.Name = "DescriptionLabel";
+            DescriptionLabel.Size = new Size(36, 15);
+            DescriptionLabel.TabIndex = 11;
+            DescriptionLabel.Text = "None";
             // 
-            // label5
+            // AuthorLabel
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(278, 59);
-            label5.Name = "label5";
-            label5.Size = new Size(38, 15);
-            label5.TabIndex = 10;
-            label5.Text = "label5";
+            AuthorLabel.AutoSize = true;
+            AuthorLabel.Location = new Point(278, 59);
+            AuthorLabel.Name = "AuthorLabel";
+            AuthorLabel.Size = new Size(36, 15);
+            AuthorLabel.TabIndex = 10;
+            AuthorLabel.Text = "None";
             // 
-            // label4
+            // ModNameLabel
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(279, 21);
-            label4.Name = "label4";
-            label4.Size = new Size(38, 15);
-            label4.TabIndex = 9;
-            label4.Text = "label4";
+            ModNameLabel.AutoSize = true;
+            ModNameLabel.Location = new Point(279, 21);
+            ModNameLabel.Name = "ModNameLabel";
+            ModNameLabel.Size = new Size(36, 15);
+            ModNameLabel.TabIndex = 9;
+            ModNameLabel.Text = "None";
             // 
             // label3
             // 
@@ -235,14 +241,16 @@
             label1.TabIndex = 6;
             label1.Text = "Name";
             // 
-            // pictureBox1
+            // ModPicture
             // 
-            pictureBox1.BackColor = Color.Black;
-            pictureBox1.Location = new Point(706, 6);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(524, 547);
-            pictureBox1.TabIndex = 5;
-            pictureBox1.TabStop = false;
+            ModPicture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ModPicture.BackColor = Color.Black;
+            ModPicture.Location = new Point(683, 6);
+            ModPicture.Name = "ModPicture";
+            ModPicture.Size = new Size(547, 547);
+            ModPicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            ModPicture.TabIndex = 5;
+            ModPicture.TabStop = false;
             // 
             // tabControl1
             // 
@@ -280,7 +288,7 @@
             toolStrip1.PerformLayout();
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ModPicture).EndInit();
             tabControl1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -289,14 +297,14 @@
         #endregion
         private Button button1;
         private Button button2;
-        private Button button3;
+        private Button ApplyModsButton;
         private HScrollBar hScrollBar1;
         private ToolStripComboBox ConsoleSelection;
         private ToolStripComboBox GameSelection;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton toolStripButton4;
         private ToolStrip toolStrip1;
-        private CheckedListBox checkedListBox1;
+        private CheckedListBox ModListCheck;
         private TabPage tabPage2;
         private TabPage tabPage1;
         private TabControl tabControl1;
@@ -304,10 +312,10 @@
         private Label label3;
         private Label label2;
         private Label label1;
-        private PictureBox pictureBox1;
-        private Label label6;
-        private Label label5;
-        private Label label4;
+        private PictureBox ModPicture;
+        private Label DescriptionLabel;
+        private Label AuthorLabel;
+        private Label ModNameLabel;
         private ToolStripButton toolStripButton1;
     }
 }

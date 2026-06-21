@@ -1,7 +1,11 @@
+using SSXModManagerWinForm.ModSystem;
+
 namespace SSXModManagerWinForm
 {
     public partial class Form1 : Form
     {
+        ModList ModList = new ModList();
+        ModZipFolder ModZipFolder = new ModZipFolder();
         public Form1()
         {
             InitializeComponent();
@@ -12,7 +16,7 @@ namespace SSXModManagerWinForm
             ConsoleSelection.SelectedIndex = 0;
             CheckAddedGames();
             GenerateMissingInfo();
-            if(GameList.Count!=0)
+            if (GameList.Count != 0)
             {
                 GameSelection.SelectedIndex = 0;
             }
@@ -75,6 +79,44 @@ namespace SSXModManagerWinForm
         private void GameSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectedGame = GameSelection.SelectedIndex;
+
+            ModList.LoadModFolder(AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\SSX Tricky");
+
+            ModListCheck.Items.Clear();
+
+            for (int i = 0; i < ModList.modItems.Count; i++)
+            {
+                ModListCheck.Items.Add(ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+            }
+        }
+
+        private void ModListCheck_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ModListCheck.SelectedIndex != -1)
+            {
+                ModZipFolder.LoadMod(ModList.modItems[ModListCheck.SelectedIndex].Path);
+
+                ModNameLabel.Text = ModZipFolder.modInfo.Name;
+                AuthorLabel.Text = ModZipFolder.modInfo.Author;
+                DescriptionLabel.Text = ModZipFolder.modInfo.Description;
+
+                ModPicture.Image = ModZipFolder.image;
+            }
+            else
+            {
+                ModNameLabel.Text = "None";
+                AuthorLabel.Text = "None";
+                DescriptionLabel.Text = "None";
+
+                ModPicture.Image = null;
+            }
+        }
+
+        private void ApplyModsButton_Click(object sender, EventArgs e)
+        {
+            GameSetup.RestoreBackup("SSX Tricky");
+            ModList.ApplyMods(AppDomain.CurrentDomain.BaseDirectory + "\\Game\\SSX Tricky");
+            MessageBox.Show("Mods Applied");
         }
     }
 }

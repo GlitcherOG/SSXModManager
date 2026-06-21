@@ -53,13 +53,27 @@ namespace SSXModManagerWinForm.ModSystem
             File.WriteAllText(path, serializer);
         }
 
-        public static ModInfo LoadJson(string path)
+        public static ModInfo LoadJsonPath(string path)
         {
             string paths = path;
             if (File.Exists(paths))
             {
                 var stream = File.ReadAllText(paths);
                 var container = JsonConvert.DeserializeObject<ModInfo>(stream);
+                return container;
+            }
+            else
+            {
+                return new ModInfo();
+            }
+        }
+
+        public static ModInfo LoadJsonText(string Text)
+        {
+            var container = JsonConvert.DeserializeObject<ModInfo>(Text);
+
+            if (container != null)
+            {
                 return container;
             }
             else

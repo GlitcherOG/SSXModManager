@@ -8,35 +8,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static SSXModManagerWinForm.ModList;
 
 namespace SSXModManagerWinForm.ModSystem
 {
-    public class ModApplication
+    public class ModZipFolder
     {
         public ModInfo modInfo = new ModInfo();
-        public string ModFolderPath = "";
+        public string ModZipPath = "";
         public Image image;
         public ModMakingInstructions modInstructions = new ModMakingInstructions();
 
-        public void LoadMod(string path)
+        public void LoadMod(string ZipPath)
         {
-            ModFolderPath = path;
+            modInfo = new ModInfo();
+            modInstructions = new ModMakingInstructions();
+            image = null;
+
+            ModZipPath = ZipPath;
 
             if (image != null)
             {
                 image.Dispose();
             }
 
-            modInfo = ModInfo.LoadJson(ModFolderPath + "\\Info.json");
-            modInstructions.Load(ModFolderPath + "\\ModInstructions.txt");
+            using (ZipArchive archive = ZipFile.OpenRead(ModZipPath))
+            {
+                ZipArchiveEntry entry = archive.GetEntry("ModInfo.json");
 
-            if (File.Exists(ModFolderPath + "\\Icon.png"))
-            {
-                image = Image.FromFile(ModFolderPath + "\\Icon.png");
-            }
-            else
-            {
-                image = null;
+                using (Stream stream = entry.Open())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string fileContents = reader.ReadToEnd();
+
+                        modInfo = ModInfo.LoadJsonText(fileContents);
+                    }
+                }
+
+                //modInstructions.Load(ModZipPath + "\\ModInstructions.txt");
+
+                entry = archive.GetEntry("Icon.png");
+
+                if (entry!=null)
+                {
+                    image = Image.FromStream(entry.Open());
+                }
             }
         }
 
@@ -48,7 +65,7 @@ namespace SSXModManagerWinForm.ModSystem
 //Config Insert
         public void ApplyMod(string GamePath)
         {
-            if(modInfo!=new ModInfo())
+            if(modInstructions.Instructions.Count != 0)
             {
                 var Instructions = modInstructions.Instructions;
                 bool Valid = false;
@@ -65,7 +82,7 @@ namespace SSXModManagerWinForm.ModSystem
 
                     if (Source.StartsWith("Mod\\"))
                     {
-                        Source = Source.Replace("Mod\\", ModFolderPath + "//Temp//");
+                        Source = Source.Replace("Mod\\", ModZipPath + "//Temp//");
                     }
 
                     if (Output.StartsWith("Game\\"))
@@ -182,7 +199,15 @@ namespace SSXModManagerWinForm.ModSystem
             }
             else
             {
-                MessageBox.Show("No Mod Loaded");
+                //Fallback Copy Game Files Over
+                using (ZipArchive archive = ZipFile.OpenRead(ModZipPath))
+                {
+                    archive.ExtractToDirectory(GamePath, true);
+
+                    File.Delete(GamePath + "\\Icon.png");
+                    File.Delete(GamePath + "\\ModInfo.json");
+                    File.Delete(GamePath + "\\ModInstructions.txt");
+                }
             }
         }
 

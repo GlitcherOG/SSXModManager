@@ -37,7 +37,7 @@ namespace SSXModManagerWinForm
                 crc = CRCCalculator.CalculateCRC32(CDFile);
             }
 
-            if (crc == "8E7CFF62")
+            if (crc == "085653F4")
             {
                 ExtractSSXOGPS2(LoadPath);
             }
@@ -255,7 +255,6 @@ namespace SSXModManagerWinForm
         }
 
         //SSX 2012
-
         public static void ExtractDisk(string LoadPath, string ExtractFolder)
         {
             using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
@@ -277,6 +276,20 @@ namespace SSXModManagerWinForm
             }
         }
 
+        public static void RestoreBackup(string BackupName)
+        {
+            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
+            string BackupGameFolder = Backup + BackupName;
+            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
+            string GameFolder = GamesFolders + BackupName;
+            
+            //Basic Restore
+            //Should swap with a system that checks for extra files and deletes them
+            //Then checks hashs for the files and if any are different restores those files
+            //Directory.Delete(GameFolder, true);
+
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
+        }
 
         public static void SaveFile(Stream Input, string FilePath)
         {
