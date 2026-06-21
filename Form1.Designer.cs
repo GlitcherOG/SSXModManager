@@ -42,13 +42,13 @@
             ModListCheck = new CheckedListBox();
             tabPage2 = new TabPage();
             tabPage1 = new TabPage();
+            ModPicture = new PictureBox();
             DescriptionLabel = new Label();
             AuthorLabel = new Label();
             ModNameLabel = new Label();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            ModPicture = new PictureBox();
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
             toolStrip1.SuspendLayout();
@@ -168,13 +168,13 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(ModPicture);
             tabPage1.Controls.Add(DescriptionLabel);
             tabPage1.Controls.Add(AuthorLabel);
             tabPage1.Controls.Add(ModNameLabel);
             tabPage1.Controls.Add(label3);
             tabPage1.Controls.Add(label2);
             tabPage1.Controls.Add(label1);
-            tabPage1.Controls.Add(ModPicture);
             tabPage1.Controls.Add(ApplyModsButton);
             tabPage1.Controls.Add(ModListCheck);
             tabPage1.Controls.Add(button1);
@@ -187,12 +187,23 @@
             tabPage1.Text = "Mod List";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // ModPicture
+            // 
+            ModPicture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ModPicture.BackColor = Color.Black;
+            ModPicture.Location = new Point(683, 6);
+            ModPicture.Name = "ModPicture";
+            ModPicture.Size = new Size(547, 547);
+            ModPicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            ModPicture.TabIndex = 5;
+            ModPicture.TabStop = false;
+            // 
             // DescriptionLabel
             // 
-            DescriptionLabel.AutoSize = true;
+            DescriptionLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             DescriptionLabel.Location = new Point(279, 94);
             DescriptionLabel.Name = "DescriptionLabel";
-            DescriptionLabel.Size = new Size(36, 15);
+            DescriptionLabel.Size = new Size(398, 107);
             DescriptionLabel.TabIndex = 11;
             DescriptionLabel.Text = "None";
             // 
@@ -240,17 +251,6 @@
             label1.Size = new Size(39, 15);
             label1.TabIndex = 6;
             label1.Text = "Name";
-            // 
-            // ModPicture
-            // 
-            ModPicture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ModPicture.BackColor = Color.Black;
-            ModPicture.Location = new Point(683, 6);
-            ModPicture.Name = "ModPicture";
-            ModPicture.Size = new Size(547, 547);
-            ModPicture.SizeMode = PictureBoxSizeMode.StretchImage;
-            ModPicture.TabIndex = 5;
-            ModPicture.TabStop = false;
             // 
             // tabControl1
             // 

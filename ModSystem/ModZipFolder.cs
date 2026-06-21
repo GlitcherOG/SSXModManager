@@ -34,7 +34,7 @@ namespace SSXModManagerWinForm.ModSystem
 
             using (ZipArchive archive = ZipFile.OpenRead(ModZipPath))
             {
-                ZipArchiveEntry entry = archive.GetEntry("ModInfo.json");
+                ZipArchiveEntry entry = archive.GetEntry(GetZipPath(archive, "ModInfo.json"));
 
                 using (Stream stream = entry.Open())
                 {
@@ -48,13 +48,26 @@ namespace SSXModManagerWinForm.ModSystem
 
                 //modInstructions.Load(ModZipPath + "\\ModInstructions.txt");
 
-                entry = archive.GetEntry("Icon.png");
+                entry = archive.GetEntry(GetZipPath(archive, "Icon.png"));
 
                 if (entry!=null)
                 {
                     image = Image.FromStream(entry.Open());
                 }
             }
+        }
+
+        public static string GetZipPath(ZipArchive archive, string FileName)
+        {
+            for (int i = 0; i < archive.Entries.Count; i++)
+            {
+                if (archive.Entries[i].FullName.ToLower()==FileName.ToLower())
+                {
+                    return archive.Entries[i].FullName;
+                }
+            }
+
+            return "null";
         }
 
 //Copy
