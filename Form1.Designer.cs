@@ -36,7 +36,7 @@
             ConsoleSelection = new ToolStripComboBox();
             GameSelection = new ToolStripComboBox();
             toolStripSeparator1 = new ToolStripSeparator();
-            toolStripButton4 = new ToolStripButton();
+            LaunchGameButton = new ToolStripButton();
             toolStrip1 = new ToolStrip();
             toolStripButton1 = new ToolStripButton();
             ModListCheck = new CheckedListBox();
@@ -51,10 +51,15 @@
             label1 = new Label();
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
+            label5 = new Label();
+            button3 = new Button();
+            PCSX2PathTextBox = new TextBox();
+            label4 = new Label();
             toolStrip1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ModPicture).BeginInit();
             tabControl1.SuspendLayout();
+            tabPage3.SuspendLayout();
             SuspendLayout();
             // 
             // button1
@@ -117,19 +122,20 @@
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 25);
             // 
-            // toolStripButton4
+            // LaunchGameButton
             // 
-            toolStripButton4.Alignment = ToolStripItemAlignment.Right;
-            toolStripButton4.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripButton4.Image = (Image)resources.GetObject("toolStripButton4.Image");
-            toolStripButton4.ImageTransparentColor = Color.Magenta;
-            toolStripButton4.Name = "toolStripButton4";
-            toolStripButton4.Size = new Size(84, 22);
-            toolStripButton4.Text = "Launch Game";
+            LaunchGameButton.Alignment = ToolStripItemAlignment.Right;
+            LaunchGameButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            LaunchGameButton.Image = (Image)resources.GetObject("LaunchGameButton.Image");
+            LaunchGameButton.ImageTransparentColor = Color.Magenta;
+            LaunchGameButton.Name = "LaunchGameButton";
+            LaunchGameButton.Size = new Size(84, 22);
+            LaunchGameButton.Text = "Launch Game";
+            LaunchGameButton.Click += LaunchGameButton_Click;
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, toolStripButton4, toolStripButton1 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, LaunchGameButton, toolStripButton1 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1268, 25);
@@ -266,12 +272,51 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(label5);
+            tabPage3.Controls.Add(button3);
+            tabPage3.Controls.Add(PCSX2PathTextBox);
+            tabPage3.Controls.Add(label4);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Size = new Size(1236, 601);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Settings";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(14, 54);
+            label5.Name = "label5";
+            label5.Size = new Size(151, 15);
+            label5.TabIndex = 3;
+            label5.Text = "Portable Path Not Detected";
+            // 
+            // button3
+            // 
+            button3.Location = new Point(572, 28);
+            button3.Name = "button3";
+            button3.Size = new Size(75, 23);
+            button3.TabIndex = 2;
+            button3.Text = "Load Path";
+            button3.UseVisualStyleBackColor = true;
+            // 
+            // PCSX2PathTextBox
+            // 
+            PCSX2PathTextBox.Location = new Point(14, 28);
+            PCSX2PathTextBox.Name = "PCSX2PathTextBox";
+            PCSX2PathTextBox.Size = new Size(552, 23);
+            PCSX2PathTextBox.TabIndex = 1;
+            PCSX2PathTextBox.TextChanged += PCSX2PathTextBox_TextChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(14, 10);
+            label4.Name = "label4";
+            label4.Size = new Size(68, 15);
+            label4.TabIndex = 0;
+            label4.Text = "PCSX2 Path";
             // 
             // Form1
             // 
@@ -290,6 +335,8 @@
             tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)ModPicture).EndInit();
             tabControl1.ResumeLayout(false);
+            tabPage3.ResumeLayout(false);
+            tabPage3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -302,7 +349,7 @@
         private ToolStripComboBox ConsoleSelection;
         private ToolStripComboBox GameSelection;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton toolStripButton4;
+        private ToolStripButton LaunchGameButton;
         private ToolStrip toolStrip1;
         private CheckedListBox ModListCheck;
         private TabPage tabPage2;
@@ -317,5 +364,9 @@
         private Label AuthorLabel;
         private Label ModNameLabel;
         private ToolStripButton toolStripButton1;
+        private Label label4;
+        private Button button3;
+        private TextBox PCSX2PathTextBox;
+        private Label label5;
     }
 }

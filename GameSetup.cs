@@ -128,6 +128,35 @@ namespace SSXModManagerWinForm
             //Extract to Backup
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            //Write HostSF
+            // The new REAL library version introduced here onwards
+            // doesn't hardcode the length of the host0 string, and trying to hardcode
+            // the length results in crashing.
+            // So we admit defeat and just give it what it wants, to a point.
+            //util::ReplaceString(util::Ptr(0x00387468), "host0:");
+            //util::WriteString(util::Ptr(0x003b9130), "host:");
+
+            // Write new IOP module paths
+            //util::WriteString(util::Ptr(0x00387258), "host:data/modules/ioprp224.img");
+            //util::WriteString(util::Ptr(0x003872b0), "host:data/modules/sio2man.irx");
+            //util::WriteString(util::Ptr(0x003872f0), "host:data/modules/padman.irx");
+            //util::WriteString(util::Ptr(0x00387330), "host:data/modules/libsd.irx");
+            //util::WriteString(util::Ptr(0x00387370), "host:data/modules/snddrv.irx");
+            //util::WriteString(util::Ptr(0x003873b0), "host:data/modules/mcman.irx");
+            //util::WriteString(util::Ptr(0x003873f0), "host:data/modules/mcserv.irx");
+
+            // BIGless worlds
+            // You'll need bigfile's bigextract to extract the world archives,
+            // since they're c0fb BIG archives.
+
+            // It seems they got a little mad at the mound of paths and made paths composed
+            // via sprintf(), so this is actually quite a bit easier to do than OG.
+            //util::ReplaceString(util::Ptr(0x003a7bb8), "data/models/%s%s");
+
+            // NOP world BIG file mounts, both for hardcoded SSXFE and the world's mounting
+            //util::NopFill < 4 > (util::Ptr(0x001862dc));
+            //util::MemRefTo<uint32_t>(util::Ptr(0x00263e1c)) = 0x00000000;
+
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG", BackupGameFolder);
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
