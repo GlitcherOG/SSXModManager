@@ -7,8 +7,10 @@ namespace SSXModManagerWinForm.ModSystem
 {
     public class ModInfo
     {
+        public int ModPackVersion = 2;
         public string Name;
         public string Author;
+        public int Game;
         public string Description;
         public string Version;
         public string DownloadLink;

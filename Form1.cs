@@ -136,8 +136,8 @@ namespace SSXModManagerWinForm
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
         {
-            //Process.Start(PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_20326\"");
-            Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
+            Process.Start(PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_203.26\"");
+            //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
         }
     }
 }

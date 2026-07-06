@@ -126,7 +126,7 @@ namespace SSXModManagerWinForm.ModSystem
                         Valid = true;
                     }
 
-                    if(!Valid)
+                    if (!Valid)
                     {
                         break;
                     }
@@ -188,6 +188,32 @@ namespace SSXModManagerWinForm.ModSystem
                         {
                             BIG.Create(BigType.BIG4, Source, Output, false);
                         }
+                    }
+                    else if (Instructions[i].Type == "Big Insert")
+                    {
+                        var Type = BIG.GetBigType(Output);
+                        string ExtractPath = Output.ToLower().Replace(".big", "") + "\\";
+
+                        BIG.Extract(Output, ExtractPath);
+
+                        if (File.Exists(Source))
+                        {
+                            string FileName = Path.GetFileName(Source);
+
+                            if (File.Exists(ExtractPath + Source))
+                            {
+                                File.Delete(ExtractPath + Source);
+                            }
+                            File.Copy(Source, ExtractPath+ Source);
+                        }
+                        else if (Directory.Exists(Source))
+                        {
+                            CopyDirectory(Source, ExtractPath, true);
+                        }
+
+                        BIG.Create(Type, ExtractPath, Output, false);
+
+                        Directory.Delete(ExtractPath);
                     }
                 }
 

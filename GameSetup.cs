@@ -78,6 +78,8 @@ namespace SSXModManagerWinForm
             //Extract to Backup
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            //Write HostSF
+
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG", BackupGameFolder);
@@ -134,25 +136,30 @@ namespace SSXModManagerWinForm
             // doesn't hardcode the length of the host0 string, and trying to hardcode
             // the length results in crashing.
             // So we admit defeat and just give it what it wants, to a point.
+
+            //File offset is -FF000 from original SSX-ElfLdr code
             string ElfPath = BackupGameFolder + "\\SLUS_203.26";
             using (Stream stream = File.Open(ElfPath, FileMode.Open))
             {
-                //util::ReplaceString(util::Ptr(0x00387468), "host0:");
-                //util::WriteString(util::Ptr(0x003b9130), "host:");
+                stream.Position = 0x00387468 - 0xFF000;
+                StreamUtil.WriteString(stream, "host0:", 8);
 
-                stream.Position = 0x2BA130;
+                stream.Position = 0x003b9130 - 0xFF000;
+                StreamUtil.WriteString(stream, "host:", 8);
+
+                stream.Position = 0x00387258 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/ioprp224.img", 40);
-                stream.Position = 0x2654896;
+                stream.Position = 0x003872b0 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/sio2man.irx", 40);
-                stream.Position = 0x2654960;
+                stream.Position = 0x003872f0 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/padman.irx", 40);
-                stream.Position = 0x2655024;
+                stream.Position = 0x00387330 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/libsd.irx", 40);
-                stream.Position = 0x2655088;
+                stream.Position = 0x00387370 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/snddrv.irx", 40);
-                stream.Position = 0x2655152;
+                stream.Position = 0x003873b0 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/mcman.irx", 40);
-                stream.Position = 0x2655216;
+                stream.Position = 0x003873f0 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:data/modules/mcserv.irx", 40);
 
                 // BIGless worlds
@@ -161,15 +168,18 @@ namespace SSXModManagerWinForm
 
                 // It seems they got a little mad at the mound of paths and made paths composed
                 // via sprintf(), so this is actually quite a bit easier to do than OG.
-                //util::ReplaceString(util::Ptr(0x003a7bb8), "data/models/%s%s");
-                stream.Position = 0x2788280;
-                StreamUtil.WriteString(stream, "data/models/%s%s", 40);
+                stream.Position = 0x003a7bb8 - 0xFF000;
+                StreamUtil.WriteString(stream, "data/models/%s%s", 24);
 
                 // NOP world BIG file mounts, both for hardcoded SSXFE and the world's mounting
-                //util::NopFill < 4 > (util::Ptr(0x001862dc));
-                //util::MemRefTo<uint32_t>(util::Ptr(0x00263e1c)) = 0x00000000;
-            }
+                stream.Position = 0x001862dc - 0xFF000;
 
+                for (int i = 0; i < 4; i++)
+                    StreamUtil.WriteInt32(stream, 0);
+
+                stream.Position = 0x00263e1c - 0xFF000;
+                StreamUtil.WriteInt32(stream, 0);
+            }
 
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG", BackupGameFolder);
