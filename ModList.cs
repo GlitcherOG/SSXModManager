@@ -13,9 +13,30 @@ namespace SSXModManagerWinForm
 
         public void LoadModFolder(string Folder)
         {
+            modItems = new List<ModItem>();
+
             string[] Mods = Directory.GetFiles(Folder, "*.zip", SearchOption.TopDirectoryOnly);
 
-            modItems = new List<ModItem>();
+            string[] ModFolders = Directory.GetDirectories(Folder, "*", SearchOption.TopDirectoryOnly);
+
+            for (int i = 0; i < ModFolders.Length; i++)
+            {
+                if (File.Exists(ModFolders[i] +"\\"+ "ModInfo.json"))
+                {
+                    ModItem modItem = new ModItem();
+
+                    modItem.Path = ModFolders[i];
+
+                    modItem.modInfo = ModInfo.LoadJsonPath(ModFolders[i] + "\\" + "ModInfo.json");
+
+                    modItem.Name = "*"+ modItem.modInfo.Name;
+
+                    modItem.Enabled = true;
+
+                    modItems.Add(modItem);
+                }
+
+            }
 
 
             for (int i = 0; i < Mods.Length; i++)

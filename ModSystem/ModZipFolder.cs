@@ -15,7 +15,8 @@ namespace SSXModManagerWinForm.ModSystem
     public class ModZipFolder
     {
         public ModInfo modInfo = new ModInfo();
-        public string ModZipPath = "";
+        public string ModPath = "";
+        public bool Zip = false;
         public Image image;
         public ModMakingInstructions modInstructions = new ModMakingInstructions();
 
@@ -25,35 +26,45 @@ namespace SSXModManagerWinForm.ModSystem
             modInstructions = new ModMakingInstructions();
             image = null;
 
-            ModZipPath = ZipPath;
+            ModPath = ZipPath;
 
             if (image != null)
             {
                 image.Dispose();
             }
 
-            using (ZipArchive archive = ZipFile.OpenRead(ModZipPath))
+            if (ModPath.ToLower().Contains(".zip"))
             {
-                ZipArchiveEntry entry = archive.GetEntry(GetZipPath(archive, "ModInfo.json"));
-
-                using (Stream stream = entry.Open())
+                Zip = true;
+                using (ZipArchive archive = ZipFile.OpenRead(ModPath))
                 {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string fileContents = reader.ReadToEnd();
+                    ZipArchiveEntry entry = archive.GetEntry(GetZipPath(archive, "ModInfo.json"));
 
-                        modInfo = ModInfo.LoadJsonText(fileContents);
+                    using (Stream stream = entry.Open())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string fileContents = reader.ReadToEnd();
+
+                            modInfo = ModInfo.LoadJsonText(fileContents);
+                        }
+                    }
+
+                    //modInstructions.Load(ModZipPath + "\\ModInstructions.txt");
+
+                    entry = archive.GetEntry(GetZipPath(archive, "Icon.png"));
+
+                    if (entry != null)
+                    {
+                        image = Image.FromStream(entry.Open());
                     }
                 }
-
-                //modInstructions.Load(ModZipPath + "\\ModInstructions.txt");
-
-                entry = archive.GetEntry(GetZipPath(archive, "Icon.png"));
-
-                if (entry!=null)
-                {
-                    image = Image.FromStream(entry.Open());
-                }
+            }
+            else
+            {
+                modInfo = ModInfo.LoadJsonPath(ModPath+ "\\ModInfo.json");
+                image = Image.FromFile(ModPath + "\\Icon.png");
+                modInstructions.Load(ModPath + "\\ModInstructions.txt");
             }
         }
 
@@ -78,11 +89,16 @@ namespace SSXModManagerWinForm.ModSystem
 //Config Insert
         public void ApplyMod(string GamePath)
         {
-            if(modInstructions.Instructions.Count != 0)
+            bool Valid = false;
+            if (modInstructions.Instructions.Count != 0)
             {
+                if(Zip)
+                {
+                    //Extract Zip
+                }
+
                 var Instructions = modInstructions.Instructions;
-                bool Valid = false;
-                for (int i = 0; i < Instructions.Count(); i++)
+                for (int i = 0; i < Instructions.Count; i++)
                 {
                     //Load Source and Output
                     string Source = Instructions[i].Source;
@@ -95,7 +111,7 @@ namespace SSXModManagerWinForm.ModSystem
 
                     if (Source.StartsWith("Mod\\"))
                     {
-                        Source = Source.Replace("Mod\\", ModZipPath + "//Temp//");
+                        Source = Source.Replace("Mod\\", ModPath+"\\");
                     }
 
                     if (Output.StartsWith("Game\\"))
@@ -213,40 +229,50 @@ namespace SSXModManagerWinForm.ModSystem
 
                         BIG.Create(Type, ExtractPath, Output, false);
 
-                        Directory.Delete(ExtractPath);
+                        Directory.Delete(ExtractPath, true);
                     }
-                }
-
-                if (Valid)
-                {
-                    if(File.Exists(Application.StartupPath + "//ModList.txt"))
-                    {
-                        var String = File.ReadAllText(Application.StartupPath + "//ModList.txt");
-                        String += "\n" + modInfo.Name + " (" + modInfo.Version + ")";
-                        File.WriteAllText(Application.StartupPath + "//ModList.txt", String);
-                    }
-                    else
-                    {
-                        File.WriteAllText(Application.StartupPath + "//ModList.txt", modInfo.Name + " (" + modInfo.Version + ")");
-                    }
-                    MessageBox.Show("Mod Applied");
-                }
-                else
-                {
-                    MessageBox.Show("Instructions Source Path Invalid. Are you using the correct game?");
                 }
             }
             else
             {
-                //Fallback Copy Game Files Over
-                using (ZipArchive archive = ZipFile.OpenRead(ModZipPath))
+                Valid = true;
+                if (Zip)
                 {
-                    archive.ExtractToDirectory(GamePath, true);
+                    //Fallback Copy Game Files Over
+                    using (ZipArchive archive = ZipFile.OpenRead(ModPath))
+                    {
+                        archive.ExtractToDirectory(GamePath, true);
 
+                        File.Delete(GamePath + "\\Icon.png");
+                        File.Delete(GamePath + "\\ModInfo.json");
+                        File.Delete(GamePath + "\\ModInstructions.txt");
+                    }
+                }
+                else
+                {
+                    CopyDirectory(ModPath, GamePath, true);
                     File.Delete(GamePath + "\\Icon.png");
                     File.Delete(GamePath + "\\ModInfo.json");
                     File.Delete(GamePath + "\\ModInstructions.txt");
                 }
+            }
+
+            if (Valid)
+            {
+                if (File.Exists(Application.StartupPath + "//ModList.txt"))
+                {
+                    var String = File.ReadAllText(Application.StartupPath + "//ModList.txt");
+                    String += "\n" + modInfo.Name + " (" + modInfo.Version + ")";
+                    File.WriteAllText(Application.StartupPath + "//ModList.txt", String);
+                }
+                else
+                {
+                    File.WriteAllText(Application.StartupPath + "//ModList.txt", modInfo.Name + " (" + modInfo.Version + ")");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Instructions Source Path Invalid. Are you using the correct game?");
             }
         }
 
