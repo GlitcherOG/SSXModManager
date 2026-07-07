@@ -89,6 +89,7 @@ namespace SSXModManagerWinForm.ModSystem
 //Config Insert
         public void ApplyMod(string GamePath)
         {
+
             bool Valid = false;
             if (modInstructions.Instructions.Count != 0)
             {
@@ -259,15 +260,15 @@ namespace SSXModManagerWinForm.ModSystem
 
             if (Valid)
             {
-                if (File.Exists(Application.StartupPath + "//ModList.txt"))
+                if (File.Exists(GamePath + "\\ModList.txt"))
                 {
-                    var String = File.ReadAllText(Application.StartupPath + "//ModList.txt");
-                    String += "\n" + modInfo.Name + " (" + modInfo.Version + ")";
-                    File.WriteAllText(Application.StartupPath + "//ModList.txt", String);
+                    var String = File.ReadAllText(GamePath + "\\ModList.txt");
+                    String += "\n" + modInfo.Name;
+                    File.WriteAllText(GamePath + "\\ModList.txt", String);
                 }
                 else
                 {
-                    File.WriteAllText(Application.StartupPath + "//ModList.txt", modInfo.Name + " (" + modInfo.Version + ")");
+                    File.WriteAllText(GamePath + "\\ModList.txt", modInfo.Name);
                 }
             }
             else

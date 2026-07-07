@@ -160,6 +160,7 @@
             ModListCheck.Name = "ModListCheck";
             ModListCheck.Size = new Size(266, 562);
             ModListCheck.TabIndex = 1;
+            ModListCheck.ItemCheck += ModListCheck_ItemCheck;
             ModListCheck.SelectedIndexChanged += ModListCheck_SelectedIndexChanged;
             // 
             // tabPage2

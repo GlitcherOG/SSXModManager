@@ -79,6 +79,12 @@ namespace SSXModManagerWinForm
 
         public void ApplyMods(string GameFolder)
         {
+            File.Delete(GameFolder + "\\ModList.txt");
+            while (File.Exists(GameFolder + "\\ModList.txt"))
+            {
+
+            }
+
             for (int i = 0; i < modItems.Count; i++)
             {
                 if (modItems[i].Enabled)

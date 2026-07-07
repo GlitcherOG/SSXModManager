@@ -139,5 +139,15 @@ namespace SSXModManagerWinForm
             Process.Start(PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_203.26\"");
             //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
         }
+
+        private void ModListCheck_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (ModListCheck.SelectedIndex != -1)
+            {
+                var ModelItem = ModList.modItems[ModListCheck.SelectedIndex];
+                ModelItem.Enabled = e.CurrentValue != CheckState.Checked;
+                ModList.modItems[ModListCheck.SelectedIndex] = ModelItem;
+            }
+        }
     }
 }
