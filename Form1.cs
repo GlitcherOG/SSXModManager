@@ -10,7 +10,7 @@ namespace SSXModManagerWinForm
         string Backup = AppDomain.CurrentDomain.BaseDirectory + "Backup\\";
         string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "Game\\";
         string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "Mods\\";
-        string PCSX2DataFolders = AppDomain.CurrentDomain.BaseDirectory + "PCSX2Data\\";
+        string PCSX2DataFolders = "";
         string PCSX2Path = "H:\\Games\\Emulators\\PCSX2 2.0.0\\pcsx2-qtx64-avx2.exe";
         public Form1()
         {
@@ -132,6 +132,16 @@ namespace SSXModManagerWinForm
             PCSX2Path = PCSX2PathTextBox.Text;
 
             //Check for portable.ini
+            string Directory = Path.GetDirectoryName(PCSX2Path);
+
+            if(File.Exists(Directory + "\\portable.ini"))
+            {
+                PCSX2DataFolders = Directory;
+            }
+            else
+            {
+                PCSX2DataFolders = Environment.SpecialFolder.MyDocuments + "\\PCSX2";
+            }
         }
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
