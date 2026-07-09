@@ -39,9 +39,9 @@ namespace SSXModManagerWinForm.ModSystem
                 {
                     Instruction instruction = new Instruction();
                     string[] SplitLine = Array[i].Split(',');
-                    instruction.Type = SplitLine[0];
-                    instruction.Source = SplitLine[1];
-                    instruction.Ouput = SplitLine[2];
+                    instruction.Type = SplitLine[0].ToLower();
+                    instruction.Source = SplitLine[1].ToLower();
+                    instruction.Ouput = SplitLine[2].ToLower();
                     Instructions.Add(instruction);
                 }
 

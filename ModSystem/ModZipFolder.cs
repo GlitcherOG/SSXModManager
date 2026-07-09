@@ -105,22 +105,22 @@ namespace SSXModManagerWinForm.ModSystem
                     string Source = Instructions[i].Source;
                     string Output = Instructions[i].Ouput;
 
-                    if (Source.StartsWith("Game\\"))
+                    if (Source.StartsWith("game\\"))
                     {
-                        Source = Source.Replace("Game\\", GamePath + "//");
+                        Source = Source.Replace("game\\", GamePath + "//");
                     }
 
-                    if (Source.StartsWith("Mod\\"))
+                    if (Source.StartsWith("mod\\"))
                     {
-                        Source = Source.Replace("Mod\\", ModPath+"\\");
+                        Source = Source.Replace("mod\\", ModPath+"\\");
                     }
 
-                    if (Output.StartsWith("Game\\"))
+                    if (Output.StartsWith("game\\"))
                     {
-                        Output = Output.Replace("Game\\", GamePath + "//");
+                        Output = Output.Replace("game\\", GamePath + "//");
                     }
 
-                    if (Output.StartsWith("Mod\\"))
+                    if (Output.StartsWith("mod\\"))
                     {
                         MessageBox.Show("Error Effecting Mod Folder");
                         return;
@@ -149,7 +149,7 @@ namespace SSXModManagerWinForm.ModSystem
                     }
 
                     //Working
-                    if (Instructions[i].Type == "Copy")
+                    if (Instructions[i].Type == "copy")
                     {
                         if (File.Exists(Source))
                         {
@@ -165,7 +165,7 @@ namespace SSXModManagerWinForm.ModSystem
                         }
                     }
                     //Working
-                    else if (Instructions[i].Type == "Delete")
+                    else if (Instructions[i].Type == "delete")
                     {
                         if (File.Exists(Source))
                         {
@@ -177,14 +177,14 @@ namespace SSXModManagerWinForm.ModSystem
                         }
                     }
                     //Working
-                    else if (Instructions[i].Type == "Big Extract")
+                    else if (Instructions[i].Type == "big extract")
                     {
                         if (File.Exists(Source))
                         {
                             BIG.Extract(Source, Output);
                         }
                     }
-                    else if (Instructions[i].Type == "BigF Make")
+                    else if (Instructions[i].Type == "bigf make")
                     {
                         if (Directory.Exists(Source))
                         {
@@ -192,21 +192,21 @@ namespace SSXModManagerWinForm.ModSystem
                         }
                     }
                     //Working
-                    else if (Instructions[i].Type == "BigC0FB Make")
+                    else if (Instructions[i].Type == "bigc0fb make")
                     {
                         if (Directory.Exists(Source))
                         {
                             BIG.Create(BigType.C0FB, Source, Output, false);
                         }
                     }
-                    else if (Instructions[i].Type == "Big4 Make")
+                    else if (Instructions[i].Type == "big4 make")
                     {
                         if (Directory.Exists(Source))
                         {
                             BIG.Create(BigType.BIG4, Source, Output, false);
                         }
                     }
-                    else if (Instructions[i].Type == "Big Insert")
+                    else if (Instructions[i].Type == "big insert")
                     {
                         var Type = BIG.GetBigType(Output);
                         string ExtractPath = Output.ToLower().Replace(".big", "") + "\\";
