@@ -93,7 +93,7 @@ namespace SSXModManagerWinForm
 
                     modZipFolder.LoadMod(modItems[i].Path);
 
-                    modZipFolder.ApplyMod(GameFolder);
+                    modZipFolder.ApplyMod(GameFolder, AppDomain.CurrentDomain.BaseDirectory+"\\Temp");
                 }
             }
         }

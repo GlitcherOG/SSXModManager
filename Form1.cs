@@ -149,5 +149,39 @@ namespace SSXModManagerWinForm
                 ModList.modItems[ModListCheck.SelectedIndex] = ModelItem;
             }
         }
+
+        private void MoveModUp_Click(object sender, EventArgs e)
+        {
+            if (ModListCheck.SelectedIndex > 0)
+            {
+                int SelectedID = ModListCheck.SelectedIndex;
+
+                ModList.modItems.Insert(ModListCheck.SelectedIndex - 1, ModList.modItems[ModListCheck.SelectedIndex]);
+                ModList.modItems.RemoveAt(ModListCheck.SelectedIndex + 1);
+
+                ModListCheck.Items.Insert(ModListCheck.SelectedIndex - 1, ModListCheck.Items[ModListCheck.SelectedIndex]);
+                ModListCheck.Items.RemoveAt(ModListCheck.SelectedIndex);
+
+                ModListCheck.SelectedIndex = SelectedID-1;
+                ModListCheck.SetItemChecked(ModListCheck.SelectedIndex, ModList.modItems[ModListCheck.SelectedIndex].Enabled);
+            }
+        }
+
+        private void MoveModDown_Click(object sender, EventArgs e)
+        {
+            if (ModListCheck.SelectedIndex != -1 && ModListCheck.SelectedIndex < ModList.modItems.Count-1)
+            {
+                int SelectedID = ModListCheck.SelectedIndex;
+
+                ModList.modItems.Insert(ModListCheck.SelectedIndex + 2, ModList.modItems[ModListCheck.SelectedIndex]);
+                ModList.modItems.RemoveAt(ModListCheck.SelectedIndex);
+
+                ModListCheck.Items.Insert(ModListCheck.SelectedIndex + 2, ModListCheck.Items[ModListCheck.SelectedIndex]);
+                ModListCheck.Items.RemoveAt(ModListCheck.SelectedIndex);
+
+                ModListCheck.SelectedIndex = SelectedID + 1;
+                ModListCheck.SetItemChecked(ModListCheck.SelectedIndex, ModList.modItems[ModListCheck.SelectedIndex].Enabled);
+            }
+        }
     }
 }

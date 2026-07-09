@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            button1 = new Button();
-            button2 = new Button();
+            MoveModDown = new Button();
+            MoveModUp = new Button();
             ApplyModsButton = new Button();
             hScrollBar1 = new HScrollBar();
             ConsoleSelection = new ToolStripComboBox();
@@ -62,25 +62,27 @@
             tabPage3.SuspendLayout();
             SuspendLayout();
             // 
-            // button1
+            // MoveModDown
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button1.Location = new Point(197, 572);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 2;
-            button1.Text = "\\/";
-            button1.UseVisualStyleBackColor = true;
+            MoveModDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            MoveModDown.Location = new Point(197, 572);
+            MoveModDown.Name = "MoveModDown";
+            MoveModDown.Size = new Size(75, 23);
+            MoveModDown.TabIndex = 2;
+            MoveModDown.Text = "\\/";
+            MoveModDown.UseVisualStyleBackColor = true;
+            MoveModDown.Click += MoveModDown_Click;
             // 
-            // button2
+            // MoveModUp
             // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            button2.Location = new Point(6, 572);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 3;
-            button2.Text = "/\\";
-            button2.UseVisualStyleBackColor = true;
+            MoveModUp.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            MoveModUp.Location = new Point(6, 572);
+            MoveModUp.Name = "MoveModUp";
+            MoveModUp.Size = new Size(75, 23);
+            MoveModUp.TabIndex = 3;
+            MoveModUp.Text = "/\\";
+            MoveModUp.UseVisualStyleBackColor = true;
+            MoveModUp.Click += MoveModUp_Click;
             // 
             // ApplyModsButton
             // 
@@ -184,8 +186,8 @@
             tabPage1.Controls.Add(label1);
             tabPage1.Controls.Add(ApplyModsButton);
             tabPage1.Controls.Add(ModListCheck);
-            tabPage1.Controls.Add(button1);
-            tabPage1.Controls.Add(button2);
+            tabPage1.Controls.Add(MoveModDown);
+            tabPage1.Controls.Add(MoveModUp);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -343,8 +345,8 @@
         }
 
         #endregion
-        private Button button1;
-        private Button button2;
+        private Button MoveModDown;
+        private Button MoveModUp;
         private Button ApplyModsButton;
         private HScrollBar hScrollBar1;
         private ToolStripComboBox ConsoleSelection;
