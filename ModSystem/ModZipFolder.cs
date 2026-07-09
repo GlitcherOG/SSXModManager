@@ -87,15 +87,21 @@ namespace SSXModManagerWinForm.ModSystem
 //BigF Make
 //BigC0FB Make
 //Config Insert
-        public void ApplyMod(string GamePath)
+        public void ApplyMod(string GamePath, string ZipExtractPath)
         {
-
             bool Valid = false;
             if (modInstructions.Instructions.Count != 0)
             {
-                if(Zip)
+                string TempModPath = ModPath;
+
+                if (Zip)
                 {
+                    TempModPath = ZipExtractPath;
                     //Extract Zip
+                    using (ZipArchive archive = ZipFile.OpenRead(ModPath))
+                    {
+                        archive.ExtractToDirectory(ZipExtractPath, true);
+                    }
                 }
 
                 var Instructions = modInstructions.Instructions;
@@ -112,7 +118,7 @@ namespace SSXModManagerWinForm.ModSystem
 
                     if (Source.StartsWith("mod\\"))
                     {
-                        Source = Source.Replace("mod\\", ModPath+"\\");
+                        Source = Source.Replace("mod\\", TempModPath + "\\");
                     }
 
                     if (Output.StartsWith("game\\"))
@@ -232,6 +238,11 @@ namespace SSXModManagerWinForm.ModSystem
 
                         Directory.Delete(ExtractPath, true);
                     }
+                }
+
+                if(Zip)
+                {
+                    Directory.Delete(TempModPath, true);
                 }
             }
             else
