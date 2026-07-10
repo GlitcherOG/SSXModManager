@@ -238,6 +238,8 @@ namespace SSXModManagerWinForm
             //Extract to Backup
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            //HostSF
+
             //Extract Character Models
 
             //var TempboltPS2 = new BoltPS2Handler();

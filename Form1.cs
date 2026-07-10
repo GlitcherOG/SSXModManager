@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using SSXModManagerWinForm.ModSystem;
 using System.Diagnostics;
 
@@ -10,12 +11,20 @@ namespace SSXModManagerWinForm
         string Backup = AppDomain.CurrentDomain.BaseDirectory + "Backup\\";
         string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "Game\\";
         string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "Mods\\";
-        string PCSX2DataFolders = "";
-        string PCSX2Path = "H:\\Games\\Emulators\\PCSX2 2.0.0\\pcsx2-qtx64-avx2.exe";
+        Settings AppSettings = new Settings();
+        string SettingsPath = "";
+
         public Form1()
         {
             InitializeComponent();
-            PCSX2PathTextBox.Text = PCSX2Path;
+
+            SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSXModManager\\Settings.json";
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSXModManager"))
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSXModManager");
+            }
+            AppSettings = Settings.LoadJsonPath(SettingsPath);
+            PCSX2PathTextBox.Text = AppSettings.PCSX2Path;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -42,10 +51,6 @@ namespace SSXModManagerWinForm
             if (!Directory.Exists(ModsFolders))
             {
                 Directory.CreateDirectory(ModsFolders);
-            }
-            if (!Directory.Exists(PCSX2DataFolders))
-            {
-                Directory.CreateDirectory(PCSX2DataFolders);
             }
         }
 
@@ -129,24 +134,26 @@ namespace SSXModManagerWinForm
 
         private void PCSX2PathTextBox_TextChanged(object sender, EventArgs e)
         {
-            PCSX2Path = PCSX2PathTextBox.Text;
+            AppSettings.PCSX2Path = PCSX2PathTextBox.Text;
 
             //Check for portable.ini
-            string Directory = Path.GetDirectoryName(PCSX2Path);
+            string Directory = Path.GetDirectoryName(AppSettings.PCSX2Path);
 
             if(File.Exists(Directory + "\\portable.ini"))
             {
-                PCSX2DataFolders = Directory;
+                AppSettings.PCSX2DataPath = Directory;
             }
             else
             {
-                PCSX2DataFolders = Environment.SpecialFolder.MyDocuments + "\\PCSX2";
+                AppSettings.PCSX2DataPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PCSX2";
             }
+
+            AppSettings.CreateJson(SettingsPath);
         }
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
         {
-            Process.Start(PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_203.26\"");
+            Process.Start(AppSettings.PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_203.26\"");
             //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
         }
 
