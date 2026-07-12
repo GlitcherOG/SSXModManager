@@ -47,7 +47,7 @@ namespace SSXModManagerWinForm
             {
                 ExtractSSXTrickyPS2(LoadPath);
             }
-            if (crc == "08FFF00D")
+            if (crc == "8FFF00D")
             {
                 ExtractSSX3PS2(LoadPath);
             }
@@ -246,6 +246,15 @@ namespace SSXModManagerWinForm
             //Extract to Backup
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            if(File.Exists(BackupGameFolder + "\\PAD0.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD0.000");
+            }
+            if (File.Exists(BackupGameFolder + "\\PAD1.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD1.000");
+            }
+
             //HostSF
 
             //Extract Character Models
@@ -280,6 +289,13 @@ namespace SSXModManagerWinForm
             //}
 
             //TempboltPS2.Save(openFileDialog.FileName);
+
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.Game = "SSX 3";
+            gameInfo.Version = "1";
+            gameInfo.Console = "PS2";
+            gameInfo.Elf = "SLUS_203.26";
+            gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
 
             //Extract to Active Game Folder
             CopyFilesRecursively(BackupGameFolder, GameFolder);

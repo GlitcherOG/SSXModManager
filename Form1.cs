@@ -80,6 +80,7 @@ namespace SSXModManagerWinForm
             }
             var FullList = Directory.GetDirectories(GamesFolders);
             gameInfos = new List<GameInfo>();
+            GameSelection.Items.Clear();
             for (int i = 0; i < FullList.Length; i++)
             {
                 var TempInfo = GameInfo.LoadJsonPath(FullList[i] + "\\GameInfo.json");
