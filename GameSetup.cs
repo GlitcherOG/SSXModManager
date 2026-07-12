@@ -132,6 +132,15 @@ namespace SSXModManagerWinForm
             //Extract to Backup
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            if (File.Exists(BackupGameFolder + "\\PAD0.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD0.000");
+            }
+            if (File.Exists(BackupGameFolder + "\\PAD1.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD1.000");
+            }
+
             //Write HostSF
             // The new REAL library version introduced here onwards
             // doesn't hardcode the length of the host0 string, and trying to hardcode
@@ -256,6 +265,20 @@ namespace SSXModManagerWinForm
             }
 
             //HostSF
+            string ElfPath = BackupGameFolder + "\\SLUS_207.72";
+            using (Stream stream = File.Open(ElfPath, FileMode.Open))
+            {
+                stream.Position = 0x004a3ed8 - 0xFF000;
+                StreamUtil.WriteString(stream, "host0:", 8);
+                stream.Position = 0x0048d9c8 - 0xFF000;
+                StreamUtil.WriteString(stream, "host:", 8);
+
+                stream.Position = 0x004a3ea0 - 0xFF000;
+                StreamUtil.WriteString(stream, "", 8);
+
+                stream.Position = 0x00495828 - 0xFF000;
+                StreamUtil.WriteString(stream, "host:", 8);
+            }
 
             //Extract Character Models
 
@@ -294,7 +317,7 @@ namespace SSXModManagerWinForm
             gameInfo.Game = "SSX 3";
             gameInfo.Version = "1";
             gameInfo.Console = "PS2";
-            gameInfo.Elf = "SLUS_203.26";
+            gameInfo.Elf = "SLUS_207.72";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
 
             //Extract to Active Game Folder
