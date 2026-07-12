@@ -142,16 +142,21 @@ namespace SSXModManagerWinForm
             AppSettings.PCSX2Path = PCSX2PathTextBox.Text;
 
             //Check for portable.ini
-            string Directory = Path.GetDirectoryName(AppSettings.PCSX2Path);
+            string DirectoryFolder = Path.GetDirectoryName(AppSettings.PCSX2Path);
 
-            if(File.Exists(Directory + "\\portable.ini"))
+            if (File.Exists(DirectoryFolder + "\\portable.ini"))
             {
-                AppSettings.PCSX2DataPath = Directory;
+                AppSettings.PCSX2DataPath = DirectoryFolder;
             }
             else
             {
-                AppSettings.PCSX2DataPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PCSX2";
+                if(Directory.Exists(DirectoryFolder))
+                {
+                    AppSettings.PCSX2DataPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PCSX2";
+                }
             }
+
+            PCSX2DataPathTextBox.Text = AppSettings.PCSX2DataPath;
 
             AppSettings.CreateJson(SettingsPath);
         }
@@ -184,14 +189,14 @@ namespace SSXModManagerWinForm
                 ModListCheck.Items.Insert(ModListCheck.SelectedIndex - 1, ModListCheck.Items[ModListCheck.SelectedIndex]);
                 ModListCheck.Items.RemoveAt(ModListCheck.SelectedIndex);
 
-                ModListCheck.SelectedIndex = SelectedID-1;
+                ModListCheck.SelectedIndex = SelectedID - 1;
                 ModListCheck.SetItemChecked(ModListCheck.SelectedIndex, ModList.modItems[ModListCheck.SelectedIndex].Enabled);
             }
         }
 
         private void MoveModDown_Click(object sender, EventArgs e)
         {
-            if (ModListCheck.SelectedIndex != -1 && ModListCheck.SelectedIndex < ModList.modItems.Count-1)
+            if (ModListCheck.SelectedIndex != -1 && ModListCheck.SelectedIndex < ModList.modItems.Count - 1)
             {
                 int SelectedID = ModListCheck.SelectedIndex;
 
@@ -204,6 +209,11 @@ namespace SSXModManagerWinForm
                 ModListCheck.SelectedIndex = SelectedID + 1;
                 ModListCheck.SetItemChecked(ModListCheck.SelectedIndex, ModList.modItems[ModListCheck.SelectedIndex].Enabled);
             }
+        }
+
+        private void PCSX2DataPathTextBox_TextChanged(object sender, EventArgs e)
+        {
+            AppSettings.PCSX2DataPath = PCSX2DataPathTextBox.Text;
         }
     }
 }
