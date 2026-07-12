@@ -2,6 +2,7 @@
 using SSX_Library;
 using SSXLibrary.FileHandlers;
 using SSXModManagerWinForm.Internal.Utilities;
+using SSXModManagerWinForm.ModSystem;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -208,6 +209,13 @@ namespace SSXModManagerWinForm
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\TRICK.BIG");
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG");
 
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.Game = "SSX Tricky";
+            gameInfo.Version = "1";
+            gameInfo.Console = "PS2";
+            gameInfo.Elf = "SLUS_203.26";
+            gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+
             //Extract to Active Game Folder
             CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
@@ -331,19 +339,14 @@ namespace SSXModManagerWinForm
             }
         }
 
-        public static void RestoreBackup(string BackupName)
-        {
-            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + BackupName;
-            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + BackupName;
-            
+        public static void RestoreBackup(string BackupFolder, string GameFolder)
+        {           
             //Basic Restore
             //Should swap with a system that checks for extra files and deletes them
             //Then checks hashs for the files and if any are different restores those files
             //Directory.Delete(GameFolder, true);
 
-            CopyFilesRecursively(BackupGameFolder, GameFolder);
+            CopyFilesRecursively(BackupFolder, GameFolder);
         }
 
         public static void SaveFile(Stream Input, string FilePath)

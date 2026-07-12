@@ -11,6 +11,7 @@ namespace SSXModManagerWinForm
         string Backup = AppDomain.CurrentDomain.BaseDirectory + "Backup\\";
         string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "Game\\";
         string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "Mods\\";
+        public List<GameInfo> gameInfos = new List<GameInfo>();
         Settings AppSettings = new Settings();
         string SettingsPath = "";
 
@@ -30,9 +31,9 @@ namespace SSXModManagerWinForm
         private void Form1_Load(object sender, EventArgs e)
         {
             ConsoleSelection.SelectedIndex = 0;
-            CheckAddedGames();
             GenerateMissingInfo();
-            if (GameList.Count != 0)
+            CheckAddedGames();
+            if (gameInfos.Count != 0)
             {
                 GameSelection.SelectedIndex = 0;
             }
@@ -54,7 +55,6 @@ namespace SSXModManagerWinForm
             }
         }
 
-        List<string> GameList = new List<string>();
         int SelectedGame = 0;
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -74,18 +74,23 @@ namespace SSXModManagerWinForm
 
         public void CheckAddedGames()
         {
-            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-
             if (!Directory.Exists(GamesFolders))
             {
                 return;
             }
             var FullList = Directory.GetDirectories(GamesFolders);
-
+            gameInfos = new List<GameInfo>();
             for (int i = 0; i < FullList.Length; i++)
             {
-                GameList.Add(Path.GetFileName(FullList[i]));
-                GameSelection.Items.Add(GameList[i]);
+                var TempInfo = GameInfo.LoadJsonPath(FullList[i] + "\\GameInfo.json");
+                if (TempInfo.Game != "")
+                {
+                    TempInfo.GameDirectory = GamesFolders + Path.GetFileName(FullList[i]);
+                    TempInfo.BackupDirectory = Backup + Path.GetFileName(FullList[i]);
+                    TempInfo.ModDirectory = ModsFolders + Path.GetFileName(FullList[i]);
+                    gameInfos.Add(TempInfo);
+                    GameSelection.Items.Add(TempInfo.Game);
+                }
             }
         }
 
@@ -93,7 +98,7 @@ namespace SSXModManagerWinForm
         {
             SelectedGame = GameSelection.SelectedIndex;
 
-            ModList.LoadModFolder(AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\SSX Tricky");
+            ModList.LoadModFolder(gameInfos[SelectedGame].ModDirectory);
 
             ModListCheck.Items.Clear();
 
@@ -127,8 +132,8 @@ namespace SSXModManagerWinForm
 
         private void ApplyModsButton_Click(object sender, EventArgs e)
         {
-            GameSetup.RestoreBackup("SSX Tricky");
-            ModList.ApplyMods(AppDomain.CurrentDomain.BaseDirectory + "\\Game\\SSX Tricky");
+            GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
+            ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
             MessageBox.Show("Mods Applied");
         }
 
@@ -153,7 +158,7 @@ namespace SSXModManagerWinForm
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
         {
-            Process.Start(AppSettings.PCSX2Path, "-elf \"G:\\Visual Studio Projects\\SSXModManagerWinForm\\bin\\Debug\\net10.0-windows\\Game\\SSX Tricky\\SLUS_203.26\"");
+            Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
             //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
         }
 

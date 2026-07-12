@@ -106,6 +106,7 @@
             // 
             ConsoleSelection.Alignment = ToolStripItemAlignment.Right;
             ConsoleSelection.DropDownStyle = ComboBoxStyle.DropDownList;
+            ConsoleSelection.Enabled = false;
             ConsoleSelection.Items.AddRange(new object[] { "PS2" });
             ConsoleSelection.Name = "ConsoleSelection";
             ConsoleSelection.Size = new Size(121, 25);
