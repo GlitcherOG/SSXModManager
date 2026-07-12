@@ -278,40 +278,77 @@ namespace SSXModManagerWinForm
 
                 stream.Position = 0x00495828 - 0xFF000;
                 StreamUtil.WriteString(stream, "host:", 8);
+
+                //Character Icon Paths
+                //stream.Position = 0x35B418;
+                //StreamUtil.WriteString(stream, "data/char/mobytxp/moby_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/kaoritxp/kaori_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/allegtxp/arielle_icons.ssh", 48);
+                //StreamUtil.WriteString(stream, "data/char/mactxp/mac_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/zoetxp/zoe_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/grifftxp/grommet_icons.ssh", 48);
+                //StreamUtil.WriteString(stream, "data/char/elisetxp/elise_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/natetxp/rocco_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/psymotxp/psymon_icons.ssh", 40);
+                //StreamUtil.WriteString(stream, "data/char/viggotxp/deiter_icons.ssh", 40);
             }
 
+            //Correct Bolt File
+            var TempboltPS2 = new BoltPS2Handler();
+            TempboltPS2.load(BackupGameFolder+ "DATA\\CHAR\\BOLTPS2.DAT");
+            for (int i = 0; i < TempboltPS2.characters.Count; i++)
+            {
+                var TempCharacter = TempboltPS2.characters[i];
+                for (int a = 0; a < TempCharacter.entries.Count; a++)
+                {
+                    var TempEntries = TempCharacter.entries[a];
+
+                    if (TempEntries.ModelPath != null)
+                    {
+                        if (TempEntries.ModelPath.ToLower().Contains(".big|"))
+                        {
+                            TempEntries.ModelPath = TempEntries.ModelPath.ToLower().Replace(".big|", "/");
+                        }
+                    }
+
+                    if (TempEntries.TexturePath != null)
+                    {
+                        if (TempEntries.TexturePath.ToLower().Contains(".big|"))
+                        {
+                            TempEntries.TexturePath = TempEntries.TexturePath.ToLower().Replace(".big|", "/");
+                        }
+                    }
+                    TempCharacter.entries[a] = TempEntries;
+                }
+                TempboltPS2.characters[i] = TempCharacter;
+            }
+            //Extract Character Textures
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG", BackupGameFolder + "DATA\\CHAR\\ALLEGTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG", BackupGameFolder + "DATA\\CHAR\\ELISETXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG", BackupGameFolder + "DATA\\CHAR\\GRIFFTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG", BackupGameFolder + "DATA\\CHAR\\KAORITXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG", BackupGameFolder + "DATA\\CHAR\\MACTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG", BackupGameFolder + "DATA\\CHAR\\MOBYTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG", BackupGameFolder + "DATA\\CHAR\\NATETXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG", BackupGameFolder + "DATA\\CHAR\\OTHERTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG", BackupGameFolder + "DATA\\CHAR\\PSYMOTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG", BackupGameFolder + "DATA\\CHAR\\VIGGOTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG", BackupGameFolder + "DATA\\CHAR\\ZOETXP");
             //Extract Character Models
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG", BackupGameFolder + "DATA\\CHAR\\MDLPS2");
 
-            //var TempboltPS2 = new BoltPS2Handler();
-            //TempboltPS2.load(openFileDialog.FileName);
-            //for (int i = 0; i < TempboltPS2.characters.Count; i++)
-            //{
-            //    var TempCharacter = TempboltPS2.characters[i];
-            //    for (int a = 0; a < TempCharacter.entries.Count; a++)
-            //    {
-            //        var TempEntries = TempCharacter.entries[a];
-
-            //        if (TempEntries.ModelPath != null)
-            //        {
-            //            if (TempEntries.ModelPath.ToLower().Contains(".big|"))
-            //            {
-            //                TempEntries.ModelPath = TempEntries.ModelPath.ToLower().Replace(".big|", "/");
-            //            }
-            //        }
-
-            //        if (TempEntries.TexturePath != null)
-            //        {
-            //            if (TempEntries.TexturePath.ToLower().Contains(".big|"))
-            //            {
-            //                TempEntries.TexturePath = TempEntries.TexturePath.ToLower().Replace(".big|", "/");
-            //            }
-            //        }
-            //        TempCharacter.entries[a] = TempEntries;
-            //    }
-            //    TempboltPS2.characters[i] = TempCharacter;
-            //}
-
-            //TempboltPS2.Save(openFileDialog.FileName);
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG");
+            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG");
 
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
