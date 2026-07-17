@@ -1,5 +1,6 @@
 using Microsoft.VisualBasic;
 using SSXModManagerWinForm.ModSystem;
+using SSXMultiTool.Utilities;
 using System.Diagnostics;
 
 namespace SSXModManagerWinForm
@@ -67,8 +68,10 @@ namespace SSXModManagerWinForm
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                ConsoleWindow.GenerateConsole();
                 GameSetup.CheckDisk(openFileDialog.FileName);
                 CheckAddedGames();
+                ConsoleWindow.CloseConsole();
             }
         }
 

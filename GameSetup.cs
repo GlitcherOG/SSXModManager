@@ -14,7 +14,6 @@ namespace SSXModManagerWinForm
         public static void CheckDisk(string LoadPath)
         {
             string crc = "";
-
             using (FileStream isoStream = File.Open(LoadPath, FileMode.Open))
             {
                 CDReader cd = new CDReader(isoStream, true);
@@ -43,18 +42,22 @@ namespace SSXModManagerWinForm
             {
                 ExtractSSXOGPS2(LoadPath);
             }
-            if (crc == "8E7CFF62")
+            else if (crc == "8E7CFF62")
             {
                 ExtractSSXTrickyPS2(LoadPath);
             }
-            if (crc == "8FFF00D")
+            else if (crc == "8FFF00D")
             {
                 ExtractSSX3PS2(LoadPath);
             }
-            if (crc == "0F27ED9B")
+            else
             {
-                ExtractSSXOnTourPS2(LoadPath);
+                Console.WriteLine("Currently Unsupported");
             }
+            //if (crc == "0F27ED9B")
+            //{
+            //    ExtractSSXOnTourPS2(LoadPath);
+            //}
         }
 
         //SSX OG US
@@ -109,6 +112,8 @@ namespace SSXModManagerWinForm
         //SSX Tricky US
         public static void ExtractSSXTrickyPS2(string LoadPath)
         {
+            Console.WriteLine("SSX Tricky PS2 Detected");
+            Console.WriteLine("Generating Folders");
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX Tricky\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
@@ -130,8 +135,10 @@ namespace SSXModManagerWinForm
             }
 
             //Extract to Backup
+            Console.WriteLine("Starting Disk Extracting");
             ExtractDisk(LoadPath, BackupGameFolder);
 
+            Console.WriteLine("Deleting Padding Files");
             if (File.Exists(BackupGameFolder + "\\PAD0.000"))
             {
                 File.Delete(BackupGameFolder + "\\PAD0.000");
@@ -148,6 +155,7 @@ namespace SSXModManagerWinForm
             // So we admit defeat and just give it what it wants, to a point.
 
             //File offset is -FF000 from original SSX-ElfLdr code
+            Console.WriteLine("Patching Elf File");
             string ElfPath = BackupGameFolder + "\\SLUS_203.26";
             using (Stream stream = File.Open(ElfPath, FileMode.Open))
             {
@@ -192,6 +200,7 @@ namespace SSXModManagerWinForm
             }
 
             //Extract Levels
+            Console.WriteLine("Extracting Level Files");
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG", BackupGameFolder);
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG", BackupGameFolder);
@@ -205,6 +214,7 @@ namespace SSXModManagerWinForm
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\TRICK.BIG", BackupGameFolder);
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG", BackupGameFolder);
 
+            Console.WriteLine("Deleting Redundent files");
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ALASKA.BIG");
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG");
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\ELYSIUM.BIG");
@@ -226,12 +236,15 @@ namespace SSXModManagerWinForm
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
 
             //Extract to Active Game Folder
+            Console.WriteLine("Copying Game to Active Folder");
             CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
         //SSX 3 US
         public static void ExtractSSX3PS2(string LoadPath)
         {
+            Console.WriteLine("SSX 3 PS2 Detected");
+            Console.WriteLine("Generating Folders");
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX 3\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
@@ -253,9 +266,11 @@ namespace SSXModManagerWinForm
             }
 
             //Extract to Backup
+            Console.WriteLine("Starting Disk Extracting");
             ExtractDisk(LoadPath, BackupGameFolder);
 
-            if(File.Exists(BackupGameFolder + "\\PAD0.000"))
+            Console.WriteLine("Deleting Padding Files");
+            if (File.Exists(BackupGameFolder + "\\PAD0.000"))
             {
                 File.Delete(BackupGameFolder + "\\PAD0.000");
             }
@@ -265,6 +280,7 @@ namespace SSXModManagerWinForm
             }
 
             //HostSF
+            Console.WriteLine("Patching Elf File");
             string ElfPath = BackupGameFolder + "\\SLUS_207.72";
             using (Stream stream = File.Open(ElfPath, FileMode.Open))
             {
@@ -294,6 +310,7 @@ namespace SSXModManagerWinForm
             }
 
             //Correct Bolt File
+            Console.WriteLine("Patching Bolt File");
             var TempboltPS2 = new BoltPS2Handler();
             TempboltPS2.load(BackupGameFolder+ "DATA\\CHAR\\BOLTPS2.DAT");
             for (int i = 0; i < TempboltPS2.characters.Count; i++)
@@ -323,6 +340,7 @@ namespace SSXModManagerWinForm
                 TempboltPS2.characters[i] = TempCharacter;
             }
             //Extract Character Textures
+            Console.WriteLine("Extracting Character Textures and Models");
             BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG", BackupGameFolder + "DATA\\CHAR\\ALLEGTXP");
             BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG", BackupGameFolder + "DATA\\CHAR\\ELISETXP");
             BIG.Extract(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG", BackupGameFolder + "DATA\\CHAR\\GRIFFTXP");
@@ -358,6 +376,7 @@ namespace SSXModManagerWinForm
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
 
             //Extract to Active Game Folder
+            Console.WriteLine("Copying Game to Active Folder");
             CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
@@ -403,6 +422,7 @@ namespace SSXModManagerWinForm
 
                 for (int i = 0; i < Files.Length; i++)
                 {
+                    Console.WriteLine("Extracting File " + Files[i].Replace(";1", ""));
                     string directory = Path.GetDirectoryName(ExtractFolder + Files[i]);
 
                     if (!Directory.Exists(directory))
@@ -448,12 +468,14 @@ namespace SSXModManagerWinForm
             //Now Create all of the directories
             foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
             {
+                Console.WriteLine("Creating Directory " + dirPath.Replace(sourcePath, ""));
                 Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
             }
 
             //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
+                Console.WriteLine("Copying File " + newPath.Replace(sourcePath, ""));
                 File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
             }
         }
