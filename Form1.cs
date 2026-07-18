@@ -136,8 +136,10 @@ namespace SSXModManagerWinForm
 
         private void ApplyModsButton_Click(object sender, EventArgs e)
         {
+            ConsoleWindow.GenerateConsole();
             GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
             ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
+            ConsoleWindow.CloseConsole();
             MessageBox.Show("Mods Applied");
         }
 

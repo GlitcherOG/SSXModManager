@@ -79,6 +79,7 @@ namespace SSXModManagerWinForm
 
         public void ApplyMods(string GameFolder)
         {
+            Console.WriteLine("Starting Applying Mods");
             File.Delete(GameFolder + "\\ModList.txt");
             while (File.Exists(GameFolder + "\\ModList.txt"))
             {
@@ -90,8 +91,8 @@ namespace SSXModManagerWinForm
                 if (modItems[i].Enabled)
                 {
                     ModZipFolder modZipFolder = new ModZipFolder();
-
                     modZipFolder.LoadMod(modItems[i].Path);
+                    Console.WriteLine("Loaded " + modItems[i].Name);
 
                     modZipFolder.ApplyMod(GameFolder, AppDomain.CurrentDomain.BaseDirectory+"\\Temp");
                 }

@@ -19,6 +19,22 @@ namespace SSXMultiTool.Utilities
                 if (!AttachConsole(-1))
                     AllocConsole();
 
+                // Reconnect Console.Out
+                var stdout = Console.OpenStandardOutput();
+                var writer = new StreamWriter(stdout)
+                {
+                    AutoFlush = true
+                };
+                Console.SetOut(writer);
+
+                // Reconnect Console.Error too
+                var stderr = Console.OpenStandardError();
+                var errorWriter = new StreamWriter(stderr)
+                {
+                    AutoFlush = true
+                };
+                Console.SetError(errorWriter);
+
                 Initialised = true;
             }
             else

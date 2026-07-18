@@ -247,6 +247,7 @@ namespace SSXModManagerWinForm.ModSystem
             }
             else
             {
+                Console.WriteLine("No Instructions Starting Base Copy");
                 Valid = true;
                 if (Zip)
                 {

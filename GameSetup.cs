@@ -3,9 +3,7 @@ using SSX_Library;
 using SSXLibrary.FileHandlers;
 using SSXModManagerWinForm.Internal.Utilities;
 using SSXModManagerWinForm.ModSystem;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO.Hashing;
 
 namespace SSXModManagerWinForm
 {
@@ -436,13 +434,72 @@ namespace SSXModManagerWinForm
         }
 
         public static void RestoreBackup(string BackupFolder, string GameFolder)
-        {           
+        {
             //Basic Restore
             //Should swap with a system that checks for extra files and deletes them
             //Then checks hashs for the files and if any are different restores those files
             //Directory.Delete(GameFolder, true);
+            Console.WriteLine("Starting Hash Folder Check");
+            SyncFolder(BackupFolder, GameFolder);
 
-            CopyFilesRecursively(BackupFolder, GameFolder);
+            //CopyFilesRecursively(BackupFolder, GameFolder);
+        }
+
+        public static void SyncFolder(string sourceFolder, string destinationFolder)
+        {
+            Directory.CreateDirectory(destinationFolder);
+
+            foreach (string sourceFile in Directory.GetFiles(sourceFolder, "*", SearchOption.AllDirectories))
+            {
+                string relativePath = Path.GetRelativePath(sourceFolder, sourceFile);
+                string destFile = Path.Combine(destinationFolder, relativePath);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
+
+                if (!File.Exists(destFile))
+                {
+                    File.Copy(sourceFile, destFile);
+                    Console.WriteLine($"Copied: {relativePath}");
+                    continue;
+                }
+
+                FileInfo srcInfo = new(sourceFile);
+                FileInfo dstInfo = new(destFile);
+
+                // Different size? Definitely different.
+                if (srcInfo.Length != dstInfo.Length)
+                {
+                    File.Copy(sourceFile, destFile, true);
+                    Console.WriteLine($"Replaced (size): {relativePath}");
+                    continue;
+                }
+
+                // Same size, compare hashes.
+                if (!HashesMatch(sourceFile, destFile))
+                {
+                    File.Copy(sourceFile, destFile, true);
+                    Console.WriteLine($"Replaced (hash): {relativePath}");
+                }
+            }
+        }
+
+        private static bool HashesMatch(string file1, string file2)
+        {
+            FileInfo a = new(file1);
+            FileInfo b = new(file2);
+
+            // Quick rejection
+            if (a.Length != b.Length)
+                return false;
+
+            return ComputeXxHash64(file1) == ComputeXxHash64(file2);
+        }
+
+        public static ulong ComputeXxHash64(string file)
+        {
+            byte[] hash = XxHash64.Hash(File.ReadAllBytes(file));
+
+            return BitConverter.ToUInt64(hash, 0);
         }
 
         public static void SaveFile(Stream Input, string FilePath)
