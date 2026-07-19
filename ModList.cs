@@ -37,14 +37,13 @@ namespace SSXModManagerWinForm
 
                         modItem.Folder = true;
 
-                        modItem.Enabled = true;
+                        modItem.Enabled = false;
 
                         modItems.Add(modItem);
                     }
                 }
 
             }
-
 
             for (int i = 0; i < Mods.Length; i++)
             {
@@ -73,7 +72,7 @@ namespace SSXModManagerWinForm
 
                             modItem.Folder = false;
 
-                            modItem.Enabled = true;
+                            modItem.Enabled = false;
 
                             modItems.Add(modItem);
                         }

@@ -50,7 +50,20 @@ namespace SSXModManagerWinForm.ModSystem
                         }
                     }
 
-                    //modInstructions.Load(ModZipPath + "\\ModInstructions.txt");
+                    entry = archive.GetEntry(GetZipPath(archive, "ModInstructions.txt"));
+
+                    if (entry != null)
+                    {
+                        using (Stream stream = entry.Open())
+                        {
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                string fileContents = reader.ReadToEnd();
+
+                                modInstructions.LoadText(fileContents);
+                            }
+                        }
+                    }
 
                     entry = archive.GetEntry(GetZipPath(archive, "Icon.png"));
 
@@ -220,6 +233,15 @@ namespace SSXModManagerWinForm.ModSystem
                     else if (Instructions[i].Type == "big insert")
                     {
                         var Type = BIG.GetBigType(Output);
+
+                        var Members = BIG.GetMembersInfo(Output);
+                        bool Slash = false;
+
+                        if (Members[0].Path.Contains("\\"))
+                        {
+                            Slash = true;
+                        }
+
                         string ExtractPath = Output.ToLower().Replace(".big", "") + "\\";
 
                         BIG.Extract(Output, ExtractPath);
@@ -239,7 +261,7 @@ namespace SSXModManagerWinForm.ModSystem
                             CopyDirectory(Source, ExtractPath, true);
                         }
 
-                        BIG.Create(Type, ExtractPath, Output, false);
+                        BIG.Create(Type, ExtractPath, Output,false, Slash);
 
                         Directory.Delete(ExtractPath, true);
                     }

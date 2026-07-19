@@ -13,7 +13,7 @@ namespace SSXModManagerWinForm.ModSystem
             Lines.Add("HostFs = true");
             Lines.Add("");
             Lines.Add("[EmuCore/GS]");
-            Lines.Add("accurate_blending_unit = 3");
+            Lines.Add("accurate_blending_unit = 4");
             Lines.Add("");
             Lines.Add("[EmuCore/CPU]");
             Lines.Add("FPU.Roundmode = 0");

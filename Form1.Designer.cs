@@ -31,16 +31,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             MoveModDown = new Button();
             MoveModUp = new Button();
-            ApplyModsButton = new Button();
+            RefreshModButton = new Button();
             hScrollBar1 = new HScrollBar();
             ConsoleSelection = new ToolStripComboBox();
             GameSelection = new ToolStripComboBox();
             toolStripSeparator1 = new ToolStripSeparator();
             LaunchGameButton = new ToolStripButton();
             toolStrip1 = new ToolStrip();
+            toolStripSeparator2 = new ToolStripSeparator();
+            ApplyModsButton = new ToolStripButton();
             toolStripButton1 = new ToolStripButton();
             ModListCheck = new CheckedListBox();
             tabPage1 = new TabPage();
+            VersionText = new Label();
+            label7 = new Label();
             ModPicture = new PictureBox();
             DescriptionLabel = new Label();
             AuthorLabel = new Label();
@@ -51,9 +55,8 @@
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
             label5 = new Label();
-            button1 = new Button();
             PCSX2DataPathTextBox = new TextBox();
-            button3 = new Button();
+            PCSX2exepathload = new Button();
             PCSX2PathTextBox = new TextBox();
             label4 = new Label();
             toolStrip1.SuspendLayout();
@@ -85,16 +88,16 @@
             MoveModUp.UseVisualStyleBackColor = true;
             MoveModUp.Click += MoveModUp_Click;
             // 
-            // ApplyModsButton
+            // RefreshModButton
             // 
-            ApplyModsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            ApplyModsButton.Location = new Point(1095, 572);
-            ApplyModsButton.Name = "ApplyModsButton";
-            ApplyModsButton.Size = new Size(135, 23);
-            ApplyModsButton.TabIndex = 4;
-            ApplyModsButton.Text = "Apply Mods";
-            ApplyModsButton.UseVisualStyleBackColor = true;
-            ApplyModsButton.Click += ApplyModsButton_Click;
+            RefreshModButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            RefreshModButton.Location = new Point(87, 572);
+            RefreshModButton.Name = "RefreshModButton";
+            RefreshModButton.Size = new Size(104, 23);
+            RefreshModButton.TabIndex = 4;
+            RefreshModButton.Text = "Refresh Mod List";
+            RefreshModButton.UseVisualStyleBackColor = true;
+            RefreshModButton.Click += RefreshModsButton_Click;
             // 
             // hScrollBar1
             // 
@@ -139,12 +142,29 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, LaunchGameButton, toolStripButton1 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, LaunchGameButton, toolStripSeparator2, ApplyModsButton, toolStripButton1 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1268, 25);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Alignment = ToolStripItemAlignment.Right;
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(6, 25);
+            // 
+            // ApplyModsButton
+            // 
+            ApplyModsButton.Alignment = ToolStripItemAlignment.Right;
+            ApplyModsButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ApplyModsButton.Image = (Image)resources.GetObject("ApplyModsButton.Image");
+            ApplyModsButton.ImageTransparentColor = Color.Magenta;
+            ApplyModsButton.Name = "ApplyModsButton";
+            ApplyModsButton.Size = new Size(75, 22);
+            ApplyModsButton.Text = "Apply Mods";
+            ApplyModsButton.Click += ApplyModsButton_Click;
             // 
             // toolStripButton1
             // 
@@ -169,6 +189,8 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(VersionText);
+            tabPage1.Controls.Add(label7);
             tabPage1.Controls.Add(ModPicture);
             tabPage1.Controls.Add(DescriptionLabel);
             tabPage1.Controls.Add(AuthorLabel);
@@ -176,7 +198,7 @@
             tabPage1.Controls.Add(label3);
             tabPage1.Controls.Add(label2);
             tabPage1.Controls.Add(label1);
-            tabPage1.Controls.Add(ApplyModsButton);
+            tabPage1.Controls.Add(RefreshModButton);
             tabPage1.Controls.Add(ModListCheck);
             tabPage1.Controls.Add(MoveModDown);
             tabPage1.Controls.Add(MoveModUp);
@@ -188,13 +210,31 @@
             tabPage1.Text = "Mod List";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // VersionText
+            // 
+            VersionText.AutoSize = true;
+            VersionText.Location = new Point(279, 100);
+            VersionText.Name = "VersionText";
+            VersionText.Size = new Size(36, 15);
+            VersionText.TabIndex = 13;
+            VersionText.Text = "None";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(279, 85);
+            label7.Name = "label7";
+            label7.Size = new Size(45, 15);
+            label7.TabIndex = 12;
+            label7.Text = "Version";
+            // 
             // ModPicture
             // 
             ModPicture.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ModPicture.BackColor = Color.Black;
-            ModPicture.Location = new Point(683, 6);
+            ModPicture.Location = new Point(618, 6);
             ModPicture.Name = "ModPicture";
-            ModPicture.Size = new Size(547, 547);
+            ModPicture.Size = new Size(612, 589);
             ModPicture.SizeMode = PictureBoxSizeMode.StretchImage;
             ModPicture.TabIndex = 5;
             ModPicture.TabStop = false;
@@ -202,9 +242,9 @@
             // DescriptionLabel
             // 
             DescriptionLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            DescriptionLabel.Location = new Point(279, 94);
+            DescriptionLabel.Location = new Point(279, 141);
             DescriptionLabel.Name = "DescriptionLabel";
-            DescriptionLabel.Size = new Size(398, 107);
+            DescriptionLabel.Size = new Size(333, 107);
             DescriptionLabel.TabIndex = 11;
             DescriptionLabel.Text = "None";
             // 
@@ -229,7 +269,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(278, 79);
+            label3.Location = new Point(278, 126);
             label3.Name = "label3";
             label3.Size = new Size(67, 15);
             label3.TabIndex = 8;
@@ -267,9 +307,8 @@
             // tabPage3
             // 
             tabPage3.Controls.Add(label5);
-            tabPage3.Controls.Add(button1);
             tabPage3.Controls.Add(PCSX2DataPathTextBox);
-            tabPage3.Controls.Add(button3);
+            tabPage3.Controls.Add(PCSX2exepathload);
             tabPage3.Controls.Add(PCSX2PathTextBox);
             tabPage3.Controls.Add(label4);
             tabPage3.Location = new Point(4, 24);
@@ -288,15 +327,6 @@
             label5.TabIndex = 5;
             label5.Text = "PCSX2 Data Path";
             // 
-            // button1
-            // 
-            button1.Location = new Point(572, 77);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 4;
-            button1.Text = "Load Path";
-            button1.UseVisualStyleBackColor = true;
-            // 
             // PCSX2DataPathTextBox
             // 
             PCSX2DataPathTextBox.Location = new Point(14, 77);
@@ -306,14 +336,15 @@
             PCSX2DataPathTextBox.Text = " ";
             PCSX2DataPathTextBox.TextChanged += PCSX2DataPathTextBox_TextChanged;
             // 
-            // button3
+            // PCSX2exepathload
             // 
-            button3.Location = new Point(572, 28);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 23);
-            button3.TabIndex = 2;
-            button3.Text = "Load Path";
-            button3.UseVisualStyleBackColor = true;
+            PCSX2exepathload.Location = new Point(572, 28);
+            PCSX2exepathload.Name = "PCSX2exepathload";
+            PCSX2exepathload.Size = new Size(89, 23);
+            PCSX2exepathload.TabIndex = 2;
+            PCSX2exepathload.Text = "Load Path";
+            PCSX2exepathload.UseVisualStyleBackColor = true;
+            PCSX2exepathload.Click += PCSX2exepathload_Click;
             // 
             // PCSX2PathTextBox
             // 
@@ -328,9 +359,9 @@
             label4.AutoSize = true;
             label4.Location = new Point(14, 10);
             label4.Name = "label4";
-            label4.Size = new Size(68, 15);
+            label4.Size = new Size(88, 15);
             label4.TabIndex = 0;
-            label4.Text = "PCSX2 Path";
+            label4.Text = "PCSX2 Exe Path";
             // 
             // Form1
             // 
@@ -340,8 +371,9 @@
             Controls.Add(tabControl1);
             Controls.Add(toolStrip1);
             Controls.Add(hScrollBar1);
+            MinimumSize = new Size(1284, 708);
             Name = "Form1";
-            Text = "Mod Manager";
+            Text = "SSX Mod Manager";
             Load += Form1_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
@@ -358,7 +390,7 @@
         #endregion
         private Button MoveModDown;
         private Button MoveModUp;
-        private Button ApplyModsButton;
+        private Button RefreshModButton;
         private HScrollBar hScrollBar1;
         private ToolStripComboBox ConsoleSelection;
         private ToolStripComboBox GameSelection;
@@ -378,10 +410,13 @@
         private Label ModNameLabel;
         private ToolStripButton toolStripButton1;
         private Label label4;
-        private Button button3;
+        private Button PCSX2exepathload;
         private TextBox PCSX2PathTextBox;
         private Label label5;
-        private Button button1;
         private TextBox PCSX2DataPathTextBox;
+        private Label VersionText;
+        private Label label7;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripButton ApplyModsButton;
     }
 }

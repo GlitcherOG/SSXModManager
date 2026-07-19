@@ -50,7 +50,7 @@ namespace SSXModManagerWinForm
             }
             else
             {
-                Console.WriteLine("Currently Unsupported");
+                throw new Exception("Currently Unsupported Iso");
             }
             //if (crc == "0F27ED9B")
             //{
@@ -446,7 +446,7 @@ namespace SSXModManagerWinForm
             //Should swap with a system that checks for extra files and deletes them
             //Then checks hashs for the files and if any are different restores those files
             //Directory.Delete(GameFolder, true);
-            Console.WriteLine("Starting Hash Folder Check");
+            Console.WriteLine("Restoring Backup Files... This may take some time...");
             SyncFolder(BackupFolder, GameFolder);
 
             //CopyFilesRecursively(BackupFolder, GameFolder);
@@ -481,12 +481,12 @@ namespace SSXModManagerWinForm
                     continue;
                 }
 
-                // Same size, compare hashes.
-                //if (!HashesMatch(sourceFile, destFile))
-                //{
-                //    File.Copy(sourceFile, destFile, true);
-                //    Console.WriteLine($"Replaced (hash): {relativePath}");
-                //}
+                //Same size, compare hashes.
+                if (!HashesMatch(sourceFile, destFile))
+                {
+                    File.Copy(sourceFile, destFile, true);
+                    Console.WriteLine($"Replaced (hash): {relativePath}");
+                }       
             }
         }
 

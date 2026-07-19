@@ -69,10 +69,20 @@ namespace SSXModManagerWinForm
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 ConsoleWindow.GenerateConsole();
-                GameSetup.CheckDisk(openFileDialog.FileName);
+                try
+                {
+                    GameSetup.CheckDisk(openFileDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                }
                 CheckAddedGames();
                 ConsoleWindow.CloseConsole();
-                GameSelection.SelectedIndex = 0;
+                if (gameInfos.Count != 0)
+                {
+                    GameSelection.SelectedIndex = 0;
+                }
             }
         }
 
@@ -117,7 +127,7 @@ namespace SSXModManagerWinForm
                 }
                 else
                 {
-                    ModListCheck.Items.Add("*"+ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                    ModListCheck.Items.Add("*" + ModList.modItems[i].Name, ModList.modItems[i].Enabled);
                 }
             }
         }
@@ -133,14 +143,16 @@ namespace SSXModManagerWinForm
                     ModNameLabel.Text = ModZipFolder.modInfo.Name;
                     AuthorLabel.Text = ModZipFolder.modInfo.Author;
                     DescriptionLabel.Text = ModZipFolder.modInfo.Description;
+                    VersionText.Text = ModZipFolder.modInfo.Version;
 
                     ModPicture.Image = ModZipFolder.image;
                 }
-                catch 
+                catch
                 {
                     ModNameLabel.Text = "Error";
                     AuthorLabel.Text = "None";
                     DescriptionLabel.Text = "Unknown Error Loading Mod";
+                    VersionText.Text = "None";
 
                     ModPicture.Image = null;
                 }
@@ -150,6 +162,7 @@ namespace SSXModManagerWinForm
                 ModNameLabel.Text = "None";
                 AuthorLabel.Text = "None";
                 DescriptionLabel.Text = "None";
+                VersionText.Text = "None";
 
                 ModPicture.Image = null;
             }
@@ -157,12 +170,15 @@ namespace SSXModManagerWinForm
 
         private void ApplyModsButton_Click(object sender, EventArgs e)
         {
-            ConsoleWindow.GenerateConsole();
-            GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
-            ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
+            if (GameSelection.SelectedIndex != -1)
+            {
+                ConsoleWindow.GenerateConsole();
+                GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
+                ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
 
-            ConsoleWindow.CloseConsole();
-            MessageBox.Show("Mods Applied");
+                ConsoleWindow.CloseConsole();
+                MessageBox.Show("Mods Applied");
+            }
         }
 
         private void PCSX2PathTextBox_TextChanged(object sender, EventArgs e)
@@ -178,7 +194,7 @@ namespace SSXModManagerWinForm
             }
             else
             {
-                if(Directory.Exists(DirectoryFolder))
+                if (Directory.Exists(DirectoryFolder))
                 {
                     AppSettings.PCSX2DataPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\PCSX2";
                 }
@@ -264,6 +280,45 @@ namespace SSXModManagerWinForm
         private void PCSX2DataPathTextBox_TextChanged(object sender, EventArgs e)
         {
             AppSettings.PCSX2DataPath = PCSX2DataPathTextBox.Text;
+        }
+
+        private void PCSX2exepathload_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "PCSX2 EXE (*.exe)|*.exe|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = false
+            };
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                AppSettings.PCSX2Path = openFileDialog.FileName;
+                PCSX2PathTextBox.Text = AppSettings.PCSX2Path;
+            }
+        }
+
+        private void RefreshModsButton_Click(object sender, EventArgs e)
+        {
+            if(GameSelection.SelectedIndex!=-1)
+            {
+                ModList.LoadModFolder(gameInfos[SelectedGame].ModDirectory);
+
+                ModList.CheckModList(gameInfos[SelectedGame].GameDirectory + "\\ModList.txt");
+
+                ModListCheck.Items.Clear();
+
+                for (int i = 0; i < ModList.modItems.Count; i++)
+                {
+                    if (!ModList.modItems[i].Folder)
+                    {
+                        ModListCheck.Items.Add(ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                    }
+                    else
+                    {
+                        ModListCheck.Items.Add("*" + ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                    }
+                }
+            }
         }
     }
 }

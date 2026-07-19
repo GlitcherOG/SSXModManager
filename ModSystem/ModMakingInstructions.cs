@@ -10,12 +10,10 @@ namespace SSXModManagerWinForm.ModSystem
 {
     public class ModMakingInstructions
     {
-        public string ModPath = "";
         public List<Instruction> Instructions = new List<Instruction>();
 
-        public void Save()
+        public void Save(string paths)
         {
-            string paths = ModPath + "\\ModInstructions.txt";
             string Main = "";
             for (int i = 0; i < Instructions.Count; i++)
             {
@@ -44,13 +42,25 @@ namespace SSXModManagerWinForm.ModSystem
                     instruction.Ouput = SplitLine[2].ToLower();
                     Instructions.Add(instruction);
                 }
-
-                ModPath = path;
             }
             else
             {
-                ModPath = path;
                 Instructions = new List<Instruction>();
+            }
+        }
+
+        public void LoadText(string Text)
+        {
+            Instructions = new List<Instruction>();
+            string[] Array = Text.Replace("\r", "").Split("\n");
+            for (int i = 0; i < Array.Length; i++)
+            {
+                Instruction instruction = new Instruction();
+                string[] SplitLine = Array[i].Split(',');
+                instruction.Type = SplitLine[0].ToLower();
+                instruction.Source = SplitLine[1].ToLower();
+                instruction.Ouput = SplitLine[2].ToLower();
+                Instructions.Add(instruction);
             }
         }
     }
