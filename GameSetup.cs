@@ -36,11 +36,11 @@ namespace SSXModManagerWinForm
                 crc = CRCCalculator.CalculateCRC32(CDFile);
             }
 
-            if (crc == "085653F4")
-            {
-                ExtractSSXOGPS2(LoadPath);
-            }
-            else if (crc == "8E7CFF62")
+            //if (crc == "085653F4")
+            //{
+            //    ExtractSSXOGPS2(LoadPath);
+            //}
+            if (crc == "8E7CFF62")
             {
                 ExtractSSXTrickyPS2(LoadPath);
             }
@@ -81,6 +81,12 @@ namespace SSXModManagerWinForm
             ExtractDisk(LoadPath, BackupGameFolder);
 
             //Write HostSF
+            Console.WriteLine("Patching Elf File");
+            string ElfPath = BackupGameFolder + "\\SLUS_203.26";
+            using (Stream stream = File.Open(ElfPath, FileMode.Open))
+            {
+
+            }
 
             //Extract Levels
             BIG.Extract(BackupGameFolder + "\\DATA\\MODELS\\ALOHA.BIG", BackupGameFolder);

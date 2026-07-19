@@ -66,6 +66,11 @@ namespace SSXModManagerWinForm.ModSystem
                 image = Image.FromFile(ModPath + "\\Icon.png");
                 modInstructions.Load(ModPath + "\\ModInstructions.txt");
             }
+
+            if(modInfo.ModPackVersion>2)
+            {
+                throw new Exception("New Mod Pack Version Detected. Please Update Tool");
+            }
         }
 
         public static string GetZipPath(ZipArchive archive, string FileName)

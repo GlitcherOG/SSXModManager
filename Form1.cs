@@ -126,13 +126,24 @@ namespace SSXModManagerWinForm
         {
             if (ModListCheck.SelectedIndex != -1)
             {
-                ModZipFolder.LoadMod(ModList.modItems[ModListCheck.SelectedIndex].Path);
+                try
+                {
+                    ModZipFolder.LoadMod(ModList.modItems[ModListCheck.SelectedIndex].Path);
 
-                ModNameLabel.Text = ModZipFolder.modInfo.Name;
-                AuthorLabel.Text = ModZipFolder.modInfo.Author;
-                DescriptionLabel.Text = ModZipFolder.modInfo.Description;
+                    ModNameLabel.Text = ModZipFolder.modInfo.Name;
+                    AuthorLabel.Text = ModZipFolder.modInfo.Author;
+                    DescriptionLabel.Text = ModZipFolder.modInfo.Description;
 
-                ModPicture.Image = ModZipFolder.image;
+                    ModPicture.Image = ModZipFolder.image;
+                }
+                catch 
+                {
+                    ModNameLabel.Text = "Error";
+                    AuthorLabel.Text = "None";
+                    DescriptionLabel.Text = "Unknown Error Loading Mod";
+
+                    ModPicture.Image = null;
+                }
             }
             else
             {
@@ -180,22 +191,29 @@ namespace SSXModManagerWinForm
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
         {
-            if (File.Exists(AppSettings.PCSX2Path) && ModListCheck.SelectedIndex != -1)
+            if (GameSelection.SelectedIndex != -1)
             {
-                //Apply Any Per Game Fixes
-                string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
-                if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
+                if (File.Exists(AppSettings.PCSX2Path))
                 {
-                    GameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
+                    //Apply Any Per Game Fixes
+                    string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
+                    if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
+                    {
+                        GameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
+                    }
+
+
+                    Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
+                    //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
                 }
-
-
-                Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
-                //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
+                else
+                {
+                    MessageBox.Show("Missing Emulator");
+                }
             }
             else
             {
-                MessageBox.Show("Missing Emulator");
+                MessageBox.Show("Missing Game");
             }
         }
 

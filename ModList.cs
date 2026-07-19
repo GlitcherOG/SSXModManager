@@ -29,15 +29,18 @@ namespace SSXModManagerWinForm
 
                     modItem.modInfo = ModInfo.LoadJsonPath(ModFolders[i] + "\\" + "ModInfo.json");
 
-                    modItem.Name = modItem.modInfo.Name;
+                    if (modItem.modInfo.ModPackVersion <= 2)
+                    {
+                        modItem.Name = modItem.modInfo.Name;
 
-                    modItem.Version = modItem.modInfo.Version;
+                        modItem.Version = modItem.modInfo.Version;
 
-                    modItem.Folder = true;
+                        modItem.Folder = true;
 
-                    modItem.Enabled = true;
+                        modItem.Enabled = true;
 
-                    modItems.Add(modItem);
+                        modItems.Add(modItem);
+                    }
                 }
 
             }
@@ -131,11 +134,19 @@ namespace SSXModManagerWinForm
             {
                 if (modItems[i].Enabled)
                 {
-                    ModZipFolder modZipFolder = new ModZipFolder();
-                    modZipFolder.LoadMod(modItems[i].Path);
-                    Console.WriteLine("Loaded " + modItems[i].Name);
+                    try
+                    {
+                        ModZipFolder modZipFolder = new ModZipFolder();
+                        modZipFolder.LoadMod(modItems[i].Path);
+                        Console.WriteLine("Loaded " + modItems[i].Name);
 
-                    modZipFolder.ApplyMod(GameFolder, AppDomain.CurrentDomain.BaseDirectory+"\\Temp");
+                        modZipFolder.ApplyMod(GameFolder, AppDomain.CurrentDomain.BaseDirectory + "\\Temp");
+                    }
+                    catch (Exception ex) 
+                    { 
+                        Console.WriteLine(ex.ToString());
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
             }
         }
