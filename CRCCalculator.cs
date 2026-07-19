@@ -34,5 +34,16 @@ namespace SSXModManagerWinForm
             return crc.ToString("X");
         }
 
+        public static string CalculateCRC32(string filePath)
+        {
+            var ELFFile = File.Open(filePath, FileMode.Open);
+
+            string CRC = CalculateCRC32(ELFFile);
+
+            ELFFile.Close();
+
+            return CRC;
+        }
+
     }
 }

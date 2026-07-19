@@ -72,6 +72,7 @@ namespace SSXModManagerWinForm
                 GameSetup.CheckDisk(openFileDialog.FileName);
                 CheckAddedGames();
                 ConsoleWindow.CloseConsole();
+                GameSelection.SelectedIndex = 0;
             }
         }
 
@@ -169,8 +170,23 @@ namespace SSXModManagerWinForm
 
         private void LaunchGameButton_Click(object sender, EventArgs e)
         {
-            Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
-            //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
+            if (File.Exists(AppSettings.PCSX2Path) && ModListCheck.SelectedIndex != -1)
+            {
+                //Apply Any Per Game Fixes
+                string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
+                if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
+                {
+                    GameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
+                }
+
+
+                Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
+                //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
+            }
+            else
+            {
+                MessageBox.Show("Missing Emulator");
+            }
         }
 
         private void ModListCheck_ItemCheck(object sender, ItemCheckEventArgs e)

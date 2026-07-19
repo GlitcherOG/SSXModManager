@@ -6,9 +6,18 @@ namespace SSXModManagerWinForm.ModSystem
 {
     internal class GameSettings
     {
-        public void GenerateStandardSettings(string path)
+        public static void GenerateStandardSettings(string path)
         {
-            File.WriteAllText(path, "        [EmuCore]\r\n        HostFs = true");
+            List<string> Lines = new List<string>();
+            Lines.Add("[EmuCore]");
+            Lines.Add("HostFs = true");
+            Lines.Add("");
+            Lines.Add("[EmuCore/GS]");
+            Lines.Add("accurate_blending_unit = 3");
+            Lines.Add("");
+            Lines.Add("[EmuCore/CPU]");
+            Lines.Add("FPU.Roundmode = 0");
+            File.WriteAllLines(path, Lines);
         }
     }
 }
