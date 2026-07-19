@@ -29,7 +29,11 @@ namespace SSXModManagerWinForm
 
                     modItem.modInfo = ModInfo.LoadJsonPath(ModFolders[i] + "\\" + "ModInfo.json");
 
-                    modItem.Name = "*"+ modItem.modInfo.Name;
+                    modItem.Name = modItem.modInfo.Name;
+
+                    modItem.Version = modItem.modInfo.Version;
+
+                    modItem.Folder = true;
 
                     modItem.Enabled = true;
 
@@ -62,6 +66,10 @@ namespace SSXModManagerWinForm
 
                             modItem.Name = modItem.modInfo.Name;
 
+                            modItem.Version = modItem.modInfo.Version;
+
+                            modItem.Folder = false;
+
                             modItem.Enabled = true;
 
                             modItems.Add(modItem);
@@ -74,7 +82,40 @@ namespace SSXModManagerWinForm
                 }
 
             }
+        }
 
+        public void CheckModList(string ModListFile)
+        {
+            List<ModItem> NewModItems = new List<ModItem>();
+
+            if (File.Exists(ModListFile))
+            {
+                var ModListNames = File.ReadAllLines(ModListFile);
+
+                for (int i = 0; i < ModListNames.Length; i++)
+                {
+                    for (int j = 0; j < modItems.Count; j++)
+                    {
+                        if (modItems[j].Name + "-" + modItems[j].Version == ModListNames[i])
+                        {
+                            var TempItem = modItems[j];
+                            TempItem.Enabled = true;
+                            NewModItems.Add(TempItem);
+                            modItems.RemoveAt(j);
+                            j--;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < modItems.Count; i++)
+                {
+                    var TempItem = modItems[i];
+                    TempItem.Enabled = false;
+                    NewModItems.Add(TempItem);
+                }
+
+                modItems = NewModItems;
+            }
         }
 
         public void ApplyMods(string GameFolder)
@@ -103,6 +144,8 @@ namespace SSXModManagerWinForm
         {
             public string Name;
             public string Path;
+            public string Version;
+            public bool Folder;
             [JsonIgnore]
             public ModInfo modInfo;
             public bool Enabled;

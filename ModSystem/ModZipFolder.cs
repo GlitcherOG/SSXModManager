@@ -275,12 +275,12 @@ namespace SSXModManagerWinForm.ModSystem
                 if (File.Exists(GamePath + "\\ModList.txt"))
                 {
                     var String = File.ReadAllText(GamePath + "\\ModList.txt");
-                    String += "\n" + modInfo.Name;
+                    String += "\n" + modInfo.Name + "-" + modInfo.Version;
                     File.WriteAllText(GamePath + "\\ModList.txt", String);
                 }
                 else
                 {
-                    File.WriteAllText(GamePath + "\\ModList.txt", modInfo.Name);
+                    File.WriteAllText(GamePath + "\\ModList.txt", modInfo.Name + "-" + modInfo.Version);
                 }
             }
             else

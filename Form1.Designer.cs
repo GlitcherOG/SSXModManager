@@ -40,7 +40,6 @@
             toolStrip1 = new ToolStrip();
             toolStripButton1 = new ToolStripButton();
             ModListCheck = new CheckedListBox();
-            tabPage2 = new TabPage();
             tabPage1 = new TabPage();
             ModPicture = new PictureBox();
             DescriptionLabel = new Label();
@@ -51,12 +50,12 @@
             label1 = new Label();
             tabControl1 = new TabControl();
             tabPage3 = new TabPage();
+            label5 = new Label();
+            button1 = new Button();
+            PCSX2DataPathTextBox = new TextBox();
             button3 = new Button();
             PCSX2PathTextBox = new TextBox();
             label4 = new Label();
-            button1 = new Button();
-            PCSX2DataPathTextBox = new TextBox();
-            label5 = new Label();
             toolStrip1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ModPicture).BeginInit();
@@ -168,16 +167,6 @@
             ModListCheck.ItemCheck += ModListCheck_ItemCheck;
             ModListCheck.SelectedIndexChanged += ModListCheck_SelectedIndexChanged;
             // 
-            // tabPage2
-            // 
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1236, 601);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "Download Mods";
-            tabPage2.UseVisualStyleBackColor = true;
-            // 
             // tabPage1
             // 
             tabPage1.Controls.Add(ModPicture);
@@ -268,7 +257,6 @@
             // 
             tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
             tabControl1.Location = new Point(12, 28);
             tabControl1.Name = "tabControl1";
@@ -290,6 +278,33 @@
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Settings";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(14, 59);
+            label5.Name = "label5";
+            label5.Size = new Size(95, 15);
+            label5.TabIndex = 5;
+            label5.Text = "PCSX2 Data Path";
+            // 
+            // button1
+            // 
+            button1.Location = new Point(572, 77);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 4;
+            button1.Text = "Load Path";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // PCSX2DataPathTextBox
+            // 
+            PCSX2DataPathTextBox.Location = new Point(14, 77);
+            PCSX2DataPathTextBox.Name = "PCSX2DataPathTextBox";
+            PCSX2DataPathTextBox.Size = new Size(552, 23);
+            PCSX2DataPathTextBox.TabIndex = 3;
+            PCSX2DataPathTextBox.Text = " ";
+            PCSX2DataPathTextBox.TextChanged += PCSX2DataPathTextBox_TextChanged;
             // 
             // button3
             // 
@@ -316,33 +331,6 @@
             label4.Size = new Size(68, 15);
             label4.TabIndex = 0;
             label4.Text = "PCSX2 Path";
-            // 
-            // button1
-            // 
-            button1.Location = new Point(572, 77);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 4;
-            button1.Text = "Load Path";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // PCSX2DataPathTextBox
-            // 
-            PCSX2DataPathTextBox.Location = new Point(14, 77);
-            PCSX2DataPathTextBox.Name = "PCSX2DataPathTextBox";
-            PCSX2DataPathTextBox.Size = new Size(552, 23);
-            PCSX2DataPathTextBox.TabIndex = 3;
-            PCSX2DataPathTextBox.Text = " ";
-            PCSX2DataPathTextBox.TextChanged += PCSX2DataPathTextBox_TextChanged;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(14, 59);
-            label5.Name = "label5";
-            label5.Size = new Size(95, 15);
-            label5.TabIndex = 5;
-            label5.Text = "PCSX2 Data Path";
             // 
             // Form1
             // 
@@ -378,7 +366,6 @@
         private ToolStripButton LaunchGameButton;
         private ToolStrip toolStrip1;
         private CheckedListBox ModListCheck;
-        private TabPage tabPage2;
         private TabPage tabPage1;
         private TabControl tabControl1;
         private TabPage tabPage3;

@@ -105,11 +105,20 @@ namespace SSXModManagerWinForm
 
             ModList.LoadModFolder(gameInfos[SelectedGame].ModDirectory);
 
+            ModList.CheckModList(gameInfos[SelectedGame].GameDirectory + "\\ModList.txt");
+
             ModListCheck.Items.Clear();
 
             for (int i = 0; i < ModList.modItems.Count; i++)
             {
-                ModListCheck.Items.Add(ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                if (!ModList.modItems[i].Folder)
+                {
+                    ModListCheck.Items.Add(ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                }
+                else
+                {
+                    ModListCheck.Items.Add("*"+ModList.modItems[i].Name, ModList.modItems[i].Enabled);
+                }
             }
         }
 
@@ -140,6 +149,7 @@ namespace SSXModManagerWinForm
             ConsoleWindow.GenerateConsole();
             GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
             ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
+
             ConsoleWindow.CloseConsole();
             MessageBox.Show("Mods Applied");
         }
