@@ -300,17 +300,17 @@ namespace SSXModManagerWinForm
                 StreamUtil.WriteString(stream, "host:", 8);
 
                 //Character Icon Paths
-                //stream.Position = 0x35B418;
-                //StreamUtil.WriteString(stream, "data/char/mobytxp/moby_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/kaoritxp/kaori_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/allegtxp/arielle_icons.ssh", 48);
-                //StreamUtil.WriteString(stream, "data/char/mactxp/mac_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/zoetxp/zoe_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/grifftxp/grommet_icons.ssh", 48);
-                //StreamUtil.WriteString(stream, "data/char/elisetxp/elise_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/natetxp/rocco_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/psymotxp/psymon_icons.ssh", 40);
-                //StreamUtil.WriteString(stream, "data/char/viggotxp/deiter_icons.ssh", 40);
+                stream.Position = 0x35B418;
+                StreamUtil.WriteString(stream, "data/char/mobytxp/moby_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/kaoritxp/kaori_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/allegtxp/arielle_icons.ssh", 48);
+                StreamUtil.WriteString(stream, "data/char/mactxp/mac_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/zoetxp/zoe_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/grifftxp/grommet_icons.ssh", 48);
+                StreamUtil.WriteString(stream, "data/char/elisetxp/elise_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/natetxp/rocco_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/psymotxp/psymon_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/viggotxp/deiter_icons.ssh", 40);
             }
 
             //Correct Bolt File
@@ -343,6 +343,7 @@ namespace SSXModManagerWinForm
                 }
                 TempboltPS2.characters[i] = TempCharacter;
             }
+            TempboltPS2.Save(BackupGameFolder + "DATA\\CHAR\\BOLTPS2.DAT");
             //Extract Character Textures
             Console.WriteLine("Extracting Character Textures and Models");
             BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG", BackupGameFolder + "DATA\\CHAR\\ALLEGTXP");
@@ -359,18 +360,18 @@ namespace SSXModManagerWinForm
             //Extract Character Models
             BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG", BackupGameFolder + "DATA\\CHAR\\MDLPS2");
 
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG");
-            //File.Delete(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG");
 
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
@@ -481,11 +482,11 @@ namespace SSXModManagerWinForm
                 }
 
                 // Same size, compare hashes.
-                if (!HashesMatch(sourceFile, destFile))
-                {
-                    File.Copy(sourceFile, destFile, true);
-                    Console.WriteLine($"Replaced (hash): {relativePath}");
-                }
+                //if (!HashesMatch(sourceFile, destFile))
+                //{
+                //    File.Copy(sourceFile, destFile, true);
+                //    Console.WriteLine($"Replaced (hash): {relativePath}");
+                //}
             }
         }
 
