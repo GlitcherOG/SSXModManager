@@ -235,7 +235,7 @@
             ModPicture.Location = new Point(618, 6);
             ModPicture.Name = "ModPicture";
             ModPicture.Size = new Size(612, 589);
-            ModPicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            ModPicture.SizeMode = PictureBoxSizeMode.Zoom;
             ModPicture.TabIndex = 5;
             ModPicture.TabStop = false;
             // 
