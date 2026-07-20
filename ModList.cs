@@ -149,7 +149,7 @@ namespace SSXModManagerWinForm
             File.CreateText(CheatsIniFile);
             if(!File.Exists(PerGameFolder))
             {
-                GameSettings.GenerateStandardSettings(PerGameFolder);
+                PerGameSettings.GenerateStandardSettings(PerGameFolder);
             }
 
             for (int i = 0; i < modItems.Count; i++)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SSXModManagerWinForm.ModSystem
 {
-    internal class GameSettings
+    internal class PerGameSettings
     {
         public static void GenerateStandardSettings(string path)
         {

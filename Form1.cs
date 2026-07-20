@@ -215,7 +215,7 @@ namespace SSXModManagerWinForm
                     string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
                     if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
                     {
-                        GameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
+                        PerGameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
                     }
 
 
