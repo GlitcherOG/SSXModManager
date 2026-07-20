@@ -76,7 +76,14 @@ namespace SSXModManagerWinForm.ModSystem
             else
             {
                 modInfo = ModInfo.LoadJsonPath(ModPath+ "\\ModInfo.json");
-                image = Image.FromFile(ModPath + "\\Icon.png");
+                if (File.Exists(ModPath + "\\Icon.png"))
+                {
+                    image = Image.FromFile(ModPath + "\\Icon.png");
+                }
+                else
+                {
+                    image = new Bitmap(1, 1);
+                }
                 modInstructions.Load(ModPath + "\\ModInstructions.txt");
             }
 
