@@ -29,7 +29,7 @@ namespace SSXModManagerWinForm
 
                     modItem.modInfo = ModInfo.LoadJsonPath(ModFolders[i] + "\\" + "ModInfo.json");
 
-                    if (modItem.modInfo.ModPackVersion <= 2)
+                    if (modItem.modInfo.ModPackVersion <= 3)
                     {
                         modItem.Name = modItem.modInfo.Name;
 
@@ -66,15 +66,18 @@ namespace SSXModManagerWinForm
 
                             modItem.modInfo = ModInfo.LoadJsonText(fileContents);
 
-                            modItem.Name = modItem.modInfo.Name;
+                            if (modItem.modInfo.ModPackVersion <= 3)
+                            {
+                                modItem.Name = modItem.modInfo.Name;
 
-                            modItem.Version = modItem.modInfo.Version;
+                                modItem.Version = modItem.modInfo.Version;
 
-                            modItem.Folder = false;
+                                modItem.Folder = false;
 
-                            modItem.Enabled = false;
+                                modItem.Enabled = false;
 
-                            modItems.Add(modItem);
+                                modItems.Add(modItem);
+                            }
                         }
                     }
                     else
@@ -120,13 +123,33 @@ namespace SSXModManagerWinForm
             }
         }
 
-        public void ApplyMods(string GameFolder)
+        public void ApplyMods(string GameFolder, string PCSX2DataPath)
         {
             Console.WriteLine("Starting Applying Mods");
             File.Delete(GameFolder + "\\ModList.txt");
             while (File.Exists(GameFolder + "\\ModList.txt"))
             {
 
+            }
+
+            GameInfo gameInfo = GameInfo.LoadJsonPath(GameFolder + "\\GameInfo.json");
+
+            //Add Texture Replacement Folder
+            //Add Cheats Folder and clear ini
+            string TextureFolder = PCSX2DataPath + "\\textures\\" + gameInfo.Elf.Split('.')[0]+"\\replacements\\";
+            string CheatsIniFile = PCSX2DataPath + "\\cheats\\" + CRCCalculator.CalculateCRC32(GameFolder + "\\" + gameInfo.Elf) + ".ini";
+            string PerGameFolder = PCSX2DataPath + "\\gamesettings\\" + CRCCalculator.CalculateCRC32(GameFolder + "\\" + gameInfo.Elf) + ".ini";
+
+            if(Directory.Exists(TextureFolder))
+            {
+                Directory.Delete(TextureFolder, true);
+            }
+
+            Directory.CreateDirectory(TextureFolder);
+            File.CreateText(CheatsIniFile);
+            if(!File.Exists(PerGameFolder))
+            {
+                GameSettings.GenerateStandardSettings(PerGameFolder);
             }
 
             for (int i = 0; i < modItems.Count; i++)
@@ -139,7 +162,7 @@ namespace SSXModManagerWinForm
                         modZipFolder.LoadMod(modItems[i].Path);
                         Console.WriteLine("Loaded " + modItems[i].Name);
 
-                        modZipFolder.ApplyMod(GameFolder, AppDomain.CurrentDomain.BaseDirectory + "\\Temp");
+                        modZipFolder.ApplyPS2Mod(GameFolder, AppDomain.CurrentDomain.BaseDirectory + "\\Temp", TextureFolder, CheatsIniFile, PerGameFolder);
                     }
                     catch (Exception ex) 
                     { 

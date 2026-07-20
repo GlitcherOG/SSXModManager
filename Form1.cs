@@ -174,7 +174,7 @@ namespace SSXModManagerWinForm
             {
                 ConsoleWindow.GenerateConsole();
                 GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
-                ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory);
+                ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory, AppSettings.PCSX2DataPath);
 
                 ConsoleWindow.CloseConsole();
                 MessageBox.Show("Mods Applied");

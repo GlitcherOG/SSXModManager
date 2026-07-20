@@ -80,7 +80,7 @@ namespace SSXModManagerWinForm.ModSystem
                 modInstructions.Load(ModPath + "\\ModInstructions.txt");
             }
 
-            if(modInfo.ModPackVersion>2)
+            if(modInfo.ModPackVersion>3)
             {
                 throw new Exception("New Mod Pack Version Detected. Please Update Tool");
             }
@@ -105,7 +105,7 @@ namespace SSXModManagerWinForm.ModSystem
 //BigF Make
 //BigC0FB Make
 //Config Insert
-        public void ApplyMod(string GamePath, string ZipExtractPath)
+        public void ApplyPS2Mod(string GamePath, string ZipExtractPath, string PCSX2TexturePath, string PCSX2CheatPath, string PCSX2PerGameSettingsPath)
         {
             bool Valid = false;
             if (modInstructions.Instructions.Count != 0)
@@ -120,6 +120,11 @@ namespace SSXModManagerWinForm.ModSystem
                     {
                         archive.ExtractToDirectory(ZipExtractPath, true);
                     }
+                }
+
+                if (Directory.Exists(TempModPath + "\\PCSX2 Textures"))
+                {
+                    CopyDirectory(TempModPath + "\\PCSX2 Textures", PCSX2TexturePath, true);
                 }
 
                 var Instructions = modInstructions.Instructions;
@@ -283,6 +288,12 @@ namespace SSXModManagerWinForm.ModSystem
                     {
                         archive.ExtractToDirectory(GamePath, true);
 
+                        if (Directory.Exists(GamePath + "\\PCSX2 Textures"))
+                        {
+                            CopyDirectory(GamePath + "\\PCSX2 Textures", PCSX2TexturePath, true);
+                            Directory.Delete(GamePath + "\\PCSX2 Textures", true);
+                        }
+
                         File.Delete(GamePath + "\\Icon.png");
                         File.Delete(GamePath + "\\ModInfo.json");
                         File.Delete(GamePath + "\\ModInstructions.txt");
@@ -291,6 +302,13 @@ namespace SSXModManagerWinForm.ModSystem
                 else
                 {
                     CopyDirectory(ModPath, GamePath, true);
+
+                    if (Directory.Exists(GamePath + "\\PCSX2 Textures"))
+                    {
+                        CopyDirectory(GamePath + "\\PCSX2 Textures", PCSX2TexturePath, true);
+                        Directory.Delete(GamePath + "\\PCSX2 Textures", true);
+                    }
+
                     File.Delete(GamePath + "\\Icon.png");
                     File.Delete(GamePath + "\\ModInfo.json");
                     File.Delete(GamePath + "\\ModInstructions.txt");
