@@ -19,6 +19,9 @@ namespace SSXModManagerWinForm.ModSystem
             Lines.Add("");
             Lines.Add("[EmuCore/CPU]");
             Lines.Add("FPU.Roundmode = 0");
+
+            Lines.Add("");
+            Lines.Add("[Cheats]");
             File.WriteAllLines(path, Lines);
         }
 
@@ -46,7 +49,7 @@ namespace SSXModManagerWinForm.ModSystem
                 }
             }
 
-            File.Create(path);
+            File.Create(path).Close();
             File.WriteAllLines(path, PerSettingCheats.ToArray());
         }
 
@@ -58,11 +61,18 @@ namespace SSXModManagerWinForm.ModSystem
             {
                 if (PerSettingCheats[i] == "[Cheats]")
                 {
+                    CheatsLineFound = true;
                     PerSettingCheats.Insert(i + 1, "Enable = " + CheatName);
                 }
             }
 
-            File.Create(path);
+            if(!CheatsLineFound)
+            {
+                PerSettingCheats.Add("[Cheats]");
+                PerSettingCheats.Add("Enable = " + CheatName);
+            }
+
+            File.Create(path).Close();
             File.WriteAllLines(path, PerSettingCheats.ToArray());
         }
 

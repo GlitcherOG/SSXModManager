@@ -129,10 +129,11 @@ namespace SSXModManagerWinForm.ModSystem
                     }
                 }
 
-                if (Directory.Exists(TempModPath + "\\PCSX2 Textures"))
-                {
-                    CopyDirectory(TempModPath + "\\PCSX2 Textures", PCSX2TexturePath, true);
-                }
+                //Check Textures
+                ApplyTextures(TempModPath + "\\PCSX2 Textures", PCSX2TexturePath);
+
+                //Check Cheats
+                ApplyCheatsPS2(TempModPath + "\\PCSX2Patch.txt", PCSX2CheatPath);
 
                 var Instructions = modInstructions.Instructions;
                 for (int i = 0; i < Instructions.Count; i++)
@@ -295,11 +296,9 @@ namespace SSXModManagerWinForm.ModSystem
                     {
                         archive.ExtractToDirectory(GamePath, true);
 
-                        if (Directory.Exists(GamePath + "\\PCSX2 Textures"))
-                        {
-                            CopyDirectory(GamePath + "\\PCSX2 Textures", PCSX2TexturePath, true);
-                            Directory.Delete(GamePath + "\\PCSX2 Textures", true);
-                        }
+                        ApplyTextures(GamePath + "\\PCSX2 Textures", PCSX2TexturePath);
+
+                        ApplyCheatsPS2(GamePath + "\\PCSX2Patch.txt", PCSX2CheatPath);
 
                         File.Delete(GamePath + "\\Icon.png");
                         File.Delete(GamePath + "\\ModInfo.json");
@@ -310,11 +309,9 @@ namespace SSXModManagerWinForm.ModSystem
                 {
                     CopyDirectory(ModPath, GamePath, true);
 
-                    if (Directory.Exists(GamePath + "\\PCSX2 Textures"))
-                    {
-                        CopyDirectory(GamePath + "\\PCSX2 Textures", PCSX2TexturePath, true);
-                        Directory.Delete(GamePath + "\\PCSX2 Textures", true);
-                    }
+                    ApplyTextures(GamePath + "\\PCSX2 Textures", PCSX2TexturePath);
+
+                    ApplyCheatsPS2(GamePath + "\\PCSX2Patch.txt", PCSX2CheatPath);
 
                     File.Delete(GamePath + "\\Icon.png");
                     File.Delete(GamePath + "\\ModInfo.json");
@@ -338,6 +335,24 @@ namespace SSXModManagerWinForm.ModSystem
             else
             {
                 MessageBox.Show("Instructions Source Path Invalid. Are you using the correct game?");
+            }
+        }
+
+        public void ApplyCheatsPS2(string CheatPath, string PCSX2CheatPath)
+        {
+            if (File.Exists(CheatPath))
+            {
+                string LoadCheats = File.ReadAllText(CheatPath);
+
+                File.AppendAllText(PCSX2CheatPath, LoadCheats + "\n");
+            }
+        }
+
+        public void ApplyTextures(string ModTextures, string PCSX2TexturePath)
+        {
+            if (Directory.Exists(ModTextures))
+            {
+                CopyDirectory(ModTextures, PCSX2TexturePath, true);
             }
         }
 

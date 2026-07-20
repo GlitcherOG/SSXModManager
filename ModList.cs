@@ -126,30 +126,40 @@ namespace SSXModManagerWinForm
         public void ApplyMods(string GameFolder, string PCSX2DataPath)
         {
             Console.WriteLine("Starting Applying Mods");
-            File.Delete(GameFolder + "\\ModList.txt");
-            while (File.Exists(GameFolder + "\\ModList.txt"))
-            {
-
-            }
 
             GameInfo gameInfo = GameInfo.LoadJsonPath(GameFolder + "\\GameInfo.json");
-
-            //Add Texture Replacement Folder
-            //Add Cheats Folder and clear ini
-            string TextureFolder = PCSX2DataPath + "\\textures\\" + gameInfo.Elf.Split('.')[0]+"\\replacements\\";
-            string CheatsIniFile = PCSX2DataPath + "\\cheats\\" + CRCCalculator.CalculateCRC32(GameFolder + "\\" + gameInfo.Elf) + ".ini";
+            string TextureFolder = PCSX2DataPath + "\\textures\\" + gameInfo.Elf.Split('.')[0] + "\\replacements\\";
+            string CheatsIniFile = PCSX2DataPath + "\\cheats\\" + CRCCalculator.CalculateCRC32(GameFolder + "\\" + gameInfo.Elf) + ".pnach";
             string PerGameFolder = PCSX2DataPath + "\\gamesettings\\" + CRCCalculator.CalculateCRC32(GameFolder + "\\" + gameInfo.Elf) + ".ini";
 
-            if(Directory.Exists(TextureFolder))
+            //Add Texture Replacement Folder
+            if (Directory.Exists(TextureFolder))
             {
                 Directory.Delete(TextureFolder, true);
             }
 
+            //Add Cheats Folder and clear ini
+            if(File.Exists(CheatsIniFile))
+            {
+                File.Delete(CheatsIniFile);
+                File.CreateText(CheatsIniFile).Close();
+            }
+
+            //Clear Mods List
+            if (File.Exists(GameFolder + "\\ModList.txt"))
+            {
+                File.Delete(GameFolder + "\\ModList.txt");
+            }
+
+
             Directory.CreateDirectory(TextureFolder);
-            File.CreateText(CheatsIniFile);
             if(!File.Exists(PerGameFolder))
             {
                 PerGameSettings.GenerateStandardSettings(PerGameFolder);
+            }
+            else
+            {
+                PerGameSettings.ClearCheats(PerGameFolder);
             }
 
             for (int i = 0; i < modItems.Count; i++)
@@ -169,6 +179,16 @@ namespace SSXModManagerWinForm
                         Console.WriteLine(ex.ToString());
                         MessageBox.Show(ex.ToString());
                     }
+                }
+            }
+
+            //Apply Cheats
+            var FileLines = File.ReadAllLines(CheatsIniFile);
+            for (int i = 0; i < FileLines.Length; i++)
+            {
+                if (FileLines[i].StartsWith("["))
+                {
+                    PerGameSettings.AddCheats(PerGameFolder, FileLines[i].Replace("[","").Replace("]",""));
                 }
             }
         }
