@@ -7,7 +7,9 @@ namespace SSXModManagerWinForm.ModSystem
 {
     public class ModInfo
     {
-        public int ModPackVersion = 2;
+        [JsonIgnore]
+        public static int MainModPackVersion = 3;
+        public int ModPackVersion;
         public string Name;
         public string Author;
         public int Game;

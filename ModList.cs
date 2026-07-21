@@ -29,7 +29,7 @@ namespace SSXModManagerWinForm
 
                     modItem.modInfo = ModInfo.LoadJsonPath(ModFolders[i] + "\\" + "ModInfo.json");
 
-                    if (modItem.modInfo.ModPackVersion <= 3)
+                    if (modItem.modInfo.ModPackVersion <= ModInfo.MainModPackVersion)
                     {
                         modItem.Name = modItem.modInfo.Name;
 
@@ -66,7 +66,7 @@ namespace SSXModManagerWinForm
 
                             modItem.modInfo = ModInfo.LoadJsonText(fileContents);
 
-                            if (modItem.modInfo.ModPackVersion <= 3)
+                            if (modItem.modInfo.ModPackVersion <= ModInfo.MainModPackVersion)
                             {
                                 modItem.Name = modItem.modInfo.Name;
 
@@ -142,8 +142,8 @@ namespace SSXModManagerWinForm
             if(File.Exists(CheatsIniFile))
             {
                 File.Delete(CheatsIniFile);
-                File.CreateText(CheatsIniFile).Close();
             }
+            File.CreateText(CheatsIniFile).Close();
 
             //Clear Mods List
             if (File.Exists(GameFolder + "\\ModList.txt"))

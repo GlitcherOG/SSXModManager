@@ -278,6 +278,22 @@ namespace SSXModManagerWinForm.ModSystem
 
                         Directory.Delete(ExtractPath, true);
                     }
+                    else if (Instructions[i].Type=="loc insert")
+                    {
+                        LOC Loc = new LOC();
+                        Loc.Load(Output);
+
+                        var AllText = File.ReadAllText(Source);
+
+                        var SplitLines = AllText.Split("###");
+
+                        for (int j = 0; j < (SplitLines.Length-1)/2; j++)
+                        {
+                            Loc.SetTextByID(int.Parse(SplitLines[i*2+1]), SplitLines[i * 2 + 2].TrimStart("\r\n".ToCharArray()));
+                        }
+
+                        Loc.Save(Output);
+                    }
                 }
 
                 if(Zip)

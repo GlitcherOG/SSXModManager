@@ -218,9 +218,7 @@ namespace SSXModManagerWinForm
                         PerGameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
                     }
 
-
                     Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
-                    //Process.Start(PCSX2Path, "-gameargs \"DebugMenu\" -- I:\\PS2\\SSX\\SSX Tricky\\SSX Tricky (NTSC).iso");
                 }
                 else
                 {
