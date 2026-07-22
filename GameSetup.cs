@@ -481,32 +481,13 @@ namespace SSXModManagerWinForm
                     continue;
                 }
 
-                //Same size, compare hashes.
-                if (!HashesMatch(sourceFile, destFile))
+                if(srcInfo.LastWriteTimeUtc != dstInfo.LastWriteTimeUtc)
                 {
                     File.Copy(sourceFile, destFile, true);
-                    Console.WriteLine($"Replaced (hash): {relativePath}");
-                }       
+                    Console.WriteLine($"Replaced (time): {relativePath}");
+                    continue;
+                }
             }
-        }
-
-        private static bool HashesMatch(string file1, string file2)
-        {
-            FileInfo a = new(file1);
-            FileInfo b = new(file2);
-
-            // Quick rejection
-            if (a.Length != b.Length)
-                return false;
-
-            return ComputeXxHash64(file1) == ComputeXxHash64(file2);
-        }
-
-        public static ulong ComputeXxHash64(string file)
-        {
-            byte[] hash = XxHash64.Hash(File.ReadAllBytes(file));
-
-            return BitConverter.ToUInt64(hash, 0);
         }
 
         public static void SaveFile(Stream Input, string FilePath)

@@ -170,7 +170,7 @@ namespace SSXModManagerWinForm
                     {
                         ModZipFolder modZipFolder = new ModZipFolder();
                         modZipFolder.LoadMod(modItems[i].Path);
-                        Console.WriteLine("Loaded " + modItems[i].Name);
+                        Console.WriteLine("Applying " + modItems[i].Name);
 
                         modZipFolder.ApplyPS2Mod(GameFolder, AppDomain.CurrentDomain.BaseDirectory + "\\Temp", TextureFolder, CheatsIniFile, PerGameFolder);
                     }
