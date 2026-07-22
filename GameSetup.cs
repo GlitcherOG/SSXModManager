@@ -248,7 +248,7 @@ namespace SSXModManagerWinForm
         public static void ExtractSSX3PS2(string LoadPath)
         {
             Console.WriteLine("SSX 3 PS2 Detected");
-            Console.WriteLine("Generating Folders");
+            Console.WriteLine("Generating Folders and Clearing Old Files");
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX 3\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
@@ -260,8 +260,18 @@ namespace SSXModManagerWinForm
             {
                 Directory.CreateDirectory(BackupGameFolder);
             }
+            else
+            {
+                Directory.Delete(BackupGameFolder, true);
+                Directory.CreateDirectory(BackupGameFolder);
+            }
             if (!Directory.Exists(GameFolder))
             {
+                Directory.CreateDirectory(GameFolder);
+            }
+            else
+            {
+                Directory.Delete(GameFolder, true);
                 Directory.CreateDirectory(GameFolder);
             }
             if (!Directory.Exists(ModFolder))
@@ -311,6 +321,11 @@ namespace SSXModManagerWinForm
                 StreamUtil.WriteString(stream, "data/char/natetxp/rocco_icons.ssh", 40);
                 StreamUtil.WriteString(stream, "data/char/psymotxp/psymon_icons.ssh", 40);
                 StreamUtil.WriteString(stream, "data/char/viggotxp/deiter_icons.ssh", 40);
+
+                //Music Paths
+                stream.Position = 0x384420;
+                StreamUtil.WriteString(stream, "audio/music/", 16);
+                StreamUtil.WriteString(stream, "audio/music/", 16);
             }
 
             //Correct Bolt File
@@ -372,6 +387,43 @@ namespace SSXModManagerWinForm
             File.Delete(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG");
             File.Delete(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG");
             File.Delete(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG");
+
+            //Extract Music Files
+            Console.WriteLine("Extracting Music");
+            if (!Directory.Exists(BackupGameFolder + "DATA\\AUDIO\\MUSIC"))
+            {
+                Directory.CreateDirectory(BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+            }
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\MUSIC.BIG", BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\MUSIC2.BIG", BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+
+            var Files = Directory.GetFiles(BackupGameFolder + "DATA\\AUDIO\\MUSIC", "*.*", SearchOption.AllDirectories);
+            for (int i = 0; i < Files.Length; i++)
+            {
+                File.Move(Files[i], BackupGameFolder + "DATA\\AUDIO\\MUSIC\\" + Path.GetFileName(Files[i]));
+            }
+
+            Directory.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC\\DATA", true);
+
+            //Fix Music Inf
+            var MusicText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\MUSIC.INF");
+            MusicText = MusicText.Replace("BASEPATH = \"|data\\audio\\\"", "BASEPATH = \"\"");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\MUSIC.INF", MusicText);
+
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC.BIG");
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC2.BIG");
+
+            //Extract Audio Files
+            Console.WriteLine("Extracting Audio");
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\AUDIO.BIG", BackupGameFolder);
+
+            var BanksText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\BANKS.INF");
+            BanksText = BanksText.Replace("BASEPATH = \"audio/audio.big|data\\audio\\\"", "BASEPATH = \"audio/\"");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\BANKS.INF", BanksText);
+
+            var CROWDText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF");
+            CROWDText = CROWDText.Replace("|data\\audio\\", "");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF", CROWDText);
 
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
