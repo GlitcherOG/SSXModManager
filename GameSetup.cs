@@ -326,6 +326,9 @@ namespace SSXModManagerWinForm
                 stream.Position = 0x384420;
                 StreamUtil.WriteString(stream, "audio/music/", 16);
                 StreamUtil.WriteString(stream, "audio/music/", 16);
+
+                stream.Position = 0x3839C8;
+                StreamUtil.WriteString(stream, "data/audio/LoadingScreen.bnk", 56);
             }
 
             //Correct Bolt File
@@ -424,6 +427,10 @@ namespace SSXModManagerWinForm
             var CROWDText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF");
             CROWDText = CROWDText.Replace("|data\\audio\\", "");
             File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF", CROWDText);
+
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\AUDIO.BIG");
+
+            //Extract
 
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
