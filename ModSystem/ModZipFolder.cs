@@ -1,4 +1,5 @@
 ﻿using SSX_Library;
+using SSXLibrary.FileHandlers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -293,6 +294,26 @@ namespace SSXModManagerWinForm.ModSystem
                         }
 
                         Loc.Save(Output);
+                    }
+                    else if(Instructions[i].Type == "ssx3 music insert")
+                    {
+
+                    }
+                    else if (Instructions[i].Type == "ssx3 playlist insert")
+                    {
+
+                    }
+                    else if (Instructions[i].Type == "ssxtricky music insert")
+                    {
+
+                    }
+                    else if (Instructions[i].Type == "ssxtricky playlist insert")
+                    {
+
+                    }
+                    else if (Instructions[i].Type == "hex replace")
+                    {
+
                     }
                 }
 
