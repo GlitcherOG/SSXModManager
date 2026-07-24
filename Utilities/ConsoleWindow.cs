@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SSXMultiTool.Utilities
+namespace SSXModManagerWinForm.Utilities
 {
     public class ConsoleWindow
     {

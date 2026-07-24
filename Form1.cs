@@ -1,6 +1,6 @@
 using Microsoft.VisualBasic;
 using SSXModManagerWinForm.ModSystem;
-using SSXMultiTool.Utilities;
+using SSXModManagerWinForm.Utilities;
 using System.Diagnostics;
 
 namespace SSXModManagerWinForm
@@ -62,20 +62,47 @@ namespace SSXModManagerWinForm
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Iso File (*.iso)|*.iso|All files (*.*)|*.*",
+                Filter = "Disk File (*.iso, *.bin)|*.iso;*.bin|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = false
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 ConsoleWindow.GenerateConsole();
-                try
+                if (openFileDialog.FileName.Contains(".iso"))
                 {
-                    GameSetup.CheckDisk(openFileDialog.FileName);
+                    try
+                    {
+                        GameSetup.CheckDisk(openFileDialog.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
                 }
-                catch (Exception ex)
+                else if (openFileDialog.FileName.Contains(".bin"))
                 {
-                    MessageBox.Show(ex.Message.ToString());
+                    try
+                    {
+                        PS2CDReading.Extract(openFileDialog.FileName, AppDomain.CurrentDomain.BaseDirectory +"\\TempDisk.iso");
+                        GameSetup.CheckDisk(AppDomain.CurrentDomain.BaseDirectory + "\\TempDisk.iso");
+                        File.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\TempDisk.iso");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        GameSetup.CheckElf(openFileDialog.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
                 }
                 CheckAddedGames();
                 ConsoleWindow.CloseConsole();

@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using SSXModManagerWinForm.ModSystem;
+using SSXModManagerWinForm.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Text;
 
-namespace SSXModManagerWinForm
+namespace SSXModManagerWinForm.ModSystem
 {
     internal class ModList
     {

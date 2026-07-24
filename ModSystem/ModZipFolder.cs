@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static SSXModManagerWinForm.ModList;
+using static SSXModManagerWinForm.ModSystem.ModList;
 
 namespace SSXModManagerWinForm.ModSystem
 {

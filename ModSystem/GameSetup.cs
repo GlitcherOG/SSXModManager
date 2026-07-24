@@ -2,10 +2,11 @@
 using SSX_Library;
 using SSXLibrary.FileHandlers;
 using SSXModManagerWinForm.Internal.Utilities;
-using SSXModManagerWinForm.ModSystem;
+using SSXModManagerWinForm.Utilities;
 using System.IO.Hashing;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace SSXModManagerWinForm
+namespace SSXModManagerWinForm.ModSystem
 {
     public class GameSetup
     {
@@ -36,17 +37,45 @@ namespace SSXModManagerWinForm
                 crc = CRCCalculator.CalculateCRC32(CDFile);
             }
 
-            //if (crc == "085653F4")
-            //{
-            //    ExtractSSXOGPS2(LoadPath);
-            //}
-            if (crc == "8E7CFF62")
+            if (crc == "85653F4")
             {
-                ExtractSSXTrickyPS2(LoadPath);
+                ExtractSSXOGPS2(LoadPath, true);
+            }
+            else if(crc == "8E7CFF62")
+            {
+                ExtractSSXTrickyPS2(LoadPath, true);
             }
             else if (crc == "8FFF00D")
             {
-                ExtractSSX3PS2(LoadPath);
+                ExtractSSX3PS2(LoadPath, true);
+            }
+            else
+            {
+                throw new Exception("Currently Unsupported Iso");
+            }
+            //if (crc == "0F27ED9B")
+            //{
+            //    ExtractSSXOnTourPS2(LoadPath);
+            //}
+        }
+
+        public static void CheckElf(string LoadPath)
+        {
+            string crc = CRCCalculator.CalculateCRC32(LoadPath);
+
+            string LoadDirectory = Path.GetDirectoryName(LoadPath);
+
+            if (crc == "85653F4")
+            {
+                ExtractSSXOGPS2(LoadPath, false);
+            }
+            else if(crc == "8E7CFF62")
+            {
+                ExtractSSXTrickyPS2(LoadDirectory, false);
+            }
+            else if (crc == "8FFF00D")
+            {
+                ExtractSSX3PS2(LoadDirectory, false);
             }
             else
             {
@@ -59,7 +88,7 @@ namespace SSXModManagerWinForm
         }
 
         //SSX OG US
-        public static void ExtractSSXOGPS2(string LoadPath)
+        public static void ExtractSSXOGPS2(string LoadPath, bool disk)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX OG\\";
@@ -72,20 +101,91 @@ namespace SSXModManagerWinForm
             {
                 Directory.CreateDirectory(BackupGameFolder);
             }
-            if (!Directory.Exists(GamesFolders))
+            else
             {
-                Directory.CreateDirectory(GamesFolders);
+                Directory.Delete(BackupGameFolder, true);
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            if (!Directory.Exists(GameFolder))
+            {
+                Directory.CreateDirectory(GameFolder);
+            }
+            else
+            {
+                Directory.Delete(GameFolder, true);
+                Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
             }
 
             //Extract to Backup
-            ExtractDisk(LoadPath, BackupGameFolder);
+            if (disk)
+            {
+                ExtractDisk(LoadPath, BackupGameFolder);
+            }
+            else
+            {
+                SyncFolder(LoadPath, BackupGameFolder);
+            }
 
             //Write HostSF
             Console.WriteLine("Patching Elf File");
-            string ElfPath = BackupGameFolder + "\\SLUS_203.26";
+            string ElfPath = BackupGameFolder + "\\SLUS_200.95";
             using (Stream stream = File.Open(ElfPath, FileMode.Open))
             {
+                stream.Position = 0x002c4e70 - 0xFF000;
+                StreamUtil.WriteString(stream, "host", 6);
 
+                stream.Position = 0x00238550 - 0xFF000;
+                stream.WriteByte(0x4);
+
+                stream.Position = 0x002c5cc4 - 0xFF000;
+                StreamUtil.WriteString(stream, "host:", 5);
+
+                stream.Position = 0x002b3ab0 - 0xFF000;
+                StreamUtil.WriteString(stream, "host:data/modules/ioprp16.img", 40);
+                stream.Position += 48;
+                StreamUtil.WriteString(stream, "host:data/modules/sio2man.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/padman.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/libsd.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/sdrdrv.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/snddrv.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/mcman.irx", 40);
+                stream.Position += 24;
+                StreamUtil.WriteString(stream, "host:data/modules/mcserv.irx", 40);
+
+                stream.Position = 0x00187704 - 0xFF000;
+                for (int i = 0; i < 3; i++)
+                {
+                    StreamUtil.WriteInt32(stream, 0);
+                }
+
+                stream.Position = 0x001879f4 - 0xFF000;
+                for (int i = 0; i < 2; i++)
+                {
+                    StreamUtil.WriteInt32(stream, 0);
+                }
+
+                stream.Position = 0x002bdfc0 - 0xFF000;
+                StreamUtil.WriteString(stream, "data/models/%s.big", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wdx", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wdf", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wdr", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wdv", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wds", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.wfx", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.aip", 24);
+                StreamUtil.WriteString(stream, "data/models/%s.ssh", 24);
+                StreamUtil.WriteString(stream, "data/models/%sl.ssh", 24);
+                stream.Position = 0x002b6d10 - 0xFF000;
+                StreamUtil.WriteString(stream, "data/models/%s_sky", 24);
             }
 
             //Extract Levels
@@ -109,12 +209,19 @@ namespace SSXModManagerWinForm
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\UNTRACK.BIG");
             File.Delete(BackupGameFolder + "\\DATA\\MODELS\\WARMUP.BIG");
 
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.Game = "SSX OG";
+            gameInfo.Version = "1";
+            gameInfo.Console = "PS2";
+            gameInfo.Elf = "SLUS_200.95";
+            gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+
             //Copy to Active Game Folder
             CopyFilesRecursively(BackupGameFolder, GameFolder);
         }
 
         //SSX Tricky US
-        public static void ExtractSSXTrickyPS2(string LoadPath)
+        public static void ExtractSSXTrickyPS2(string LoadPath, bool disk)
         {
             Console.WriteLine("SSX Tricky PS2 Detected");
             Console.WriteLine("Generating Folders");
@@ -129,8 +236,18 @@ namespace SSXModManagerWinForm
             {
                 Directory.CreateDirectory(BackupGameFolder);
             }
+            else
+            {
+                Directory.Delete(BackupGameFolder, true);
+                Directory.CreateDirectory(BackupGameFolder);
+            }
             if (!Directory.Exists(GameFolder))
             {
+                Directory.CreateDirectory(GameFolder);
+            }
+            else
+            {
+                Directory.Delete(GameFolder, true);
                 Directory.CreateDirectory(GameFolder);
             }
             if (!Directory.Exists(ModFolder))
@@ -140,7 +257,14 @@ namespace SSXModManagerWinForm
 
             //Extract to Backup
             Console.WriteLine("Starting Disk Extracting");
-            ExtractDisk(LoadPath, BackupGameFolder);
+            if (disk)
+            {
+                ExtractDisk(LoadPath, BackupGameFolder);
+            }
+            else
+            {
+                SyncFolder(LoadPath, BackupGameFolder);
+            }    
 
             Console.WriteLine("Deleting Padding Files");
             if (File.Exists(BackupGameFolder + "\\PAD0.000"))
@@ -245,7 +369,7 @@ namespace SSXModManagerWinForm
         }
 
         //SSX 3 US
-        public static void ExtractSSX3PS2(string LoadPath)
+        public static void ExtractSSX3PS2(string LoadPath, bool disk)
         {
             Console.WriteLine("SSX 3 PS2 Detected");
             Console.WriteLine("Generating Folders and Clearing Old Files");
@@ -281,7 +405,14 @@ namespace SSXModManagerWinForm
 
             //Extract to Backup
             Console.WriteLine("Starting Disk Extracting");
-            ExtractDisk(LoadPath, BackupGameFolder);
+            if (disk)
+            {
+                ExtractDisk(LoadPath, BackupGameFolder);
+            }
+            else
+            {
+                SyncFolder(LoadPath, BackupGameFolder);
+            }
 
             Console.WriteLine("Deleting Padding Files");
             if (File.Exists(BackupGameFolder + "\\PAD0.000"))
@@ -445,7 +576,7 @@ namespace SSXModManagerWinForm
         }
 
         //SSX On Tour US
-        public static void ExtractSSXOnTourPS2(string LoadPath)
+        public static void ExtractSSXOnTourPS2(string LoadPath, bool disk)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
             string BackupGameFolder = Backup + "\\SSX On Tour\\";

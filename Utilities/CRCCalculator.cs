@@ -5,7 +5,7 @@ using System.IO.Hashing;
 using System.Security.Cryptography;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace SSXModManagerWinForm
+namespace SSXModManagerWinForm.Utilities
 {
     internal class CRCCalculator
     {
