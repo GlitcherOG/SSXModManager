@@ -4,6 +4,7 @@ using SSXLibrary.FileHandlers;
 using SSXModManagerWinForm.Internal.Utilities;
 using SSXModManagerWinForm.Utilities;
 using System.IO.Hashing;
+using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace SSXModManagerWinForm.ModSystem
@@ -215,6 +216,7 @@ namespace SSXModManagerWinForm.ModSystem
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_200.95";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+            SaveBackupTimestamps(BackupGameFolder);
 
             //Copy to Active Game Folder
             CopyFilesRecursively(BackupGameFolder, GameFolder);
@@ -362,6 +364,7 @@ namespace SSXModManagerWinForm.ModSystem
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_203.26";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+            SaveBackupTimestamps(BackupGameFolder);
 
             //Extract to Active Game Folder
             Console.WriteLine("Copying Game to Active Folder");
@@ -569,6 +572,7 @@ namespace SSXModManagerWinForm.ModSystem
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_207.72";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+            SaveBackupTimestamps(BackupGameFolder);
 
             //Extract to Active Game Folder
             Console.WriteLine("Copying Game to Active Folder");
@@ -632,14 +636,41 @@ namespace SSXModManagerWinForm.ModSystem
 
         public static void RestoreBackup(string BackupFolder, string GameFolder)
         {
-            //Basic Restore
-            //Should swap with a system that checks for extra files and deletes them
-            //Then checks hashs for the files and if any are different restores those files
-            //Directory.Delete(GameFolder, true);
             Console.WriteLine("Restoring Backup Files... This may take some time...");
-            SyncFolder(BackupFolder, GameFolder);
 
-            //CopyFilesRecursively(BackupFolder, GameFolder);
+            if (!Directory.Exists(BackupFolder))
+            {
+                Console.WriteLine("Backup folder not found: " + BackupFolder);
+                return;
+            }
+
+            // If timestamps don't match what's recorded for this backup, perform a full restore
+            if (!BackupTimestampsMatch(BackupFolder))
+            {
+                Console.WriteLine("Backup timestamps mismatch detected. Performing full restore.");
+
+                if (Directory.Exists(GameFolder))
+                {
+                    try
+                    {
+                        Directory.Delete(GameFolder, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Failed to remove existing game folder: " + ex.Message);
+                    }
+                }
+
+                CopyFilesRecursively(BackupFolder, GameFolder);
+
+                // Update stored timestamps to reflect current backup state
+                SaveBackupTimestamps(BackupFolder);
+            }
+            else
+            {
+                // Timestamps match - do an incremental sync as before
+                SyncFolder(BackupFolder, GameFolder);
+            }
         }
 
         public static void SyncFolder(string sourceFolder, string destinationFolder)
@@ -677,6 +708,71 @@ namespace SSXModManagerWinForm.ModSystem
                     Console.WriteLine($"Replaced (time): {relativePath}");
                     continue;
                 }
+            }
+        }
+
+        private const string BackupTimesFilename = "BackupTimes.json";
+
+        public static void SaveBackupTimestamps(string backupFolder)
+        {
+            try
+            {
+                var files = Directory.GetFiles(backupFolder, "*", SearchOption.AllDirectories)
+                    .Where(f => !string.Equals(Path.GetFileName(f), BackupTimesFilename, StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+
+                var dict = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+                foreach (var f in files)
+                {
+                    var rel = Path.GetRelativePath(backupFolder, f);
+                    dict[rel] = File.GetLastWriteTimeUtc(f).Ticks;
+                }
+
+                var path = Path.Combine(backupFolder, BackupTimesFilename);
+                var options = new JsonSerializerOptions { WriteIndented = false };
+                File.WriteAllText(path, JsonSerializer.Serialize(dict, options));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to save backup timestamps: " + ex.Message);
+            }
+        }
+
+        public static bool BackupTimestampsMatch(string backupFolder)
+        {
+            try
+            {
+                var metaPath = Path.Combine(backupFolder, BackupTimesFilename);
+                if (!File.Exists(metaPath)) return false;
+
+                var dict = JsonSerializer.Deserialize<Dictionary<string, long>>(File.ReadAllText(metaPath));
+                if (dict == null) return false;
+
+                var files = Directory.GetFiles(backupFolder, "*", SearchOption.AllDirectories)
+                    .Where(f => !string.Equals(Path.GetFileName(f), BackupTimesFilename, StringComparison.OrdinalIgnoreCase))
+                    .Select(f => Path.GetRelativePath(backupFolder, f))
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                var keys = dict.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                if (!files.SetEquals(keys)) return false;
+
+                foreach (var kv in dict)
+                {
+                    var full = Path.Combine(backupFolder, kv.Key);
+                    if (!File.Exists(full)) return false;
+
+                    // Allow for small differences in file time resolution by comparing within 1 second
+                    var currentTicks = File.GetLastWriteTimeUtc(full).Ticks;
+                    if (Math.Abs(currentTicks - kv.Value) > TimeSpan.TicksPerSecond)
+                        return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
