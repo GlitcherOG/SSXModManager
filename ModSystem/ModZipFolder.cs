@@ -1,4 +1,8 @@
-﻿using SSX_Library;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.PixelFormats;
+using SSX_Library;
+using SSX_Library.EATextureLibrary;
 using SSXLibrary.FileHandlers;
 using System;
 using System.Collections.Generic;
@@ -295,6 +299,21 @@ namespace SSXModManagerWinForm.ModSystem
 
                         Loc.Save(Output);
                     }
+                    else if (Instructions[i].Type == "ssh insert")
+                    {
+                        OldShapeHandler shapeHandler = new OldShapeHandler();
+
+                        string[] ARGS = Instructions[i].Ouput.Split("-");
+
+                        shapeHandler.LoadShape(ARGS[0]);
+
+                        var Shape = shapeHandler.ShapeImages[int.Parse(ARGS[1])];
+                        Shape.Image = (Image<Rgba32>)Image.Load(Source);
+                        shapeHandler.ShapeImages[int.Parse(ARGS[1])]= Shape;
+
+                        shapeHandler.SaveShape(ARGS[0]);
+
+                    }
                     else if(Instructions[i].Type == "ssx3 music insert")
                     {
 
@@ -308,10 +327,6 @@ namespace SSXModManagerWinForm.ModSystem
 
                     }
                     else if (Instructions[i].Type == "ssxtricky playlist insert")
-                    {
-
-                    }
-                    else if (Instructions[i].Type == "hex replace")
                     {
 
                     }
