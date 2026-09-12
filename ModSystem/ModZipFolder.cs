@@ -1,19 +1,6 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing;
-using SixLabors.ImageSharp.PixelFormats;
-using SSX_Library;
+﻿using SSX_Library;
 using SSX_Library.EATextureLibrary;
-using SSXLibrary.FileHandlers;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static SSXModManagerWinForm.ModSystem.ModList;
 
 namespace SSXModManagerWinForm.ModSystem
 {
@@ -308,7 +295,7 @@ namespace SSXModManagerWinForm.ModSystem
                         shapeHandler.LoadShape(ARGS[0]);
 
                         var Shape = shapeHandler.ShapeImages[int.Parse(ARGS[1])];
-                        Shape.Image = (Image<Rgba32>)Image.Load(Source);
+                        Shape.Image = (SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>)SixLabors.ImageSharp.Image.Load(Source);
                         shapeHandler.ShapeImages[int.Parse(ARGS[1])]= Shape;
 
                         shapeHandler.SaveShape(ARGS[0]);
