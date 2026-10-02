@@ -1,5 +1,6 @@
 ﻿using SSX_Library;
 using SSX_Library.EATextureLibrary;
+using SSXLibrary.FileHandlers;
 using System.IO.Compression;
 
 namespace SSXModManagerWinForm.ModSystem
@@ -296,14 +297,32 @@ namespace SSXModManagerWinForm.ModSystem
 
                         var Shape = shapeHandler.ShapeImages[int.Parse(ARGS[1])];
                         Shape.Image = (SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>)SixLabors.ImageSharp.Image.Load(Source);
-                        shapeHandler.ShapeImages[int.Parse(ARGS[1])]= Shape;
+                        shapeHandler.ShapeImages[int.Parse(ARGS[1])] = Shape;
 
                         shapeHandler.SaveShape(ARGS[0]);
 
                     }
                     else if(Instructions[i].Type == "ssx3 music insert")
                     {
+                        MusicINFHandler SourceINF = new MusicINFHandler();
+                        MusicINFHandler OutputINF = new MusicINFHandler();
 
+                        SourceINF.LoadMusFile(Source);
+                        OutputINF.LoadMusFile(Output);
+
+                        int LastSong = 0;
+
+                        for (int j = 0; j < OutputINF.musFileSongs.Count; j++)
+                        {
+                            if (OutputINF.musFileSongs[j].ID.TrimEnd()== "[charsel]")
+                            {
+                                LastSong = j;
+                            }
+                        }
+
+                        OutputINF.musFileSongs.InsertRange(LastSong, SourceINF.musFileSongs);
+
+                        OutputINF.SaveMusFile(Output);
                     }
                     else if (Instructions[i].Type == "ssx3 playlist insert")
                     {

@@ -244,7 +244,7 @@
             DescriptionLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             DescriptionLabel.Location = new Point(279, 141);
             DescriptionLabel.Name = "DescriptionLabel";
-            DescriptionLabel.Size = new Size(333, 107);
+            DescriptionLabel.Size = new Size(333, 427);
             DescriptionLabel.TabIndex = 11;
             DescriptionLabel.Text = "None";
             // 

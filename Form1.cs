@@ -200,6 +200,7 @@ namespace SSXModManagerWinForm
             if (GameSelection.SelectedIndex != -1)
             {
                 ConsoleWindow.GenerateConsole();
+
                 GameSetup.RestoreBackup(gameInfos[SelectedGame].BackupDirectory, gameInfos[SelectedGame].GameDirectory);
                 ModList.ApplyMods(gameInfos[SelectedGame].GameDirectory, AppSettings.PCSX2DataPath);
 

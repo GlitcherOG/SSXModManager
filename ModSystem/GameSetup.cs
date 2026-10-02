@@ -467,7 +467,7 @@ namespace SSXModManagerWinForm.ModSystem
 
             //Correct Bolt File
             Console.WriteLine("Patching Bolt File");
-            var TempboltPS2 = new BoltPS2Handler();
+            var TempboltPS2 = new BoltHandler();
             TempboltPS2.load(BackupGameFolder+ "DATA\\CHAR\\BOLTPS2.DAT");
             for (int i = 0; i < TempboltPS2.characters.Count; i++)
             {
