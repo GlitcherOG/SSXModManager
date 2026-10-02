@@ -326,7 +326,17 @@ namespace SSXModManagerWinForm.ModSystem
                     }
                     else if (Instructions[i].Type == "ssx3 playlist insert")
                     {
+                        string[] Lines = File.ReadAllLines(Source);
 
+                        string[] OutputLines = File.ReadAllLines(Output);
+
+                        Lines.CopyTo(OutputLines);
+
+                        var ListLines = OutputLines.ToList();
+
+                        ListLines.RemoveAll(string.IsNullOrWhiteSpace);
+
+                        File.WriteAllLines(Output, ListLines.ToArray());
                     }
                     else if (Instructions[i].Type == "ssxtricky music insert")
                     {
