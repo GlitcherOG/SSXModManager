@@ -1,4 +1,5 @@
-﻿using SSX_Library;
+﻿using CommunityToolkit.HighPerformance;
+using SSX_Library;
 using SSX_Library.EATextureLibrary;
 using SSXLibrary.FileHandlers;
 using System.IO.Compression;
@@ -330,9 +331,11 @@ namespace SSXModManagerWinForm.ModSystem
 
                         string[] OutputLines = File.ReadAllLines(Output);
 
-                        Lines.CopyTo(OutputLines);
+                        var SourceLines = Lines.ToList();
 
                         var ListLines = OutputLines.ToList();
+
+                        ListLines.AddRange(SourceLines);
 
                         ListLines.RemoveAll(string.IsNullOrWhiteSpace);
 
