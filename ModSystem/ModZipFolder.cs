@@ -283,7 +283,7 @@ namespace SSXModManagerWinForm.ModSystem
 
                         for (int j = 0; j < (SplitLines.Length-1)/2; j++)
                         {
-                            Loc.SetTextByID(int.Parse(SplitLines[i*2+1]), SplitLines[i * 2 + 2].TrimStart("\r\n".ToCharArray()));
+                            Loc.SetTextByID(int.Parse(SplitLines[j*2+1]), SplitLines[j * 2 + 2].TrimStart("\r\n".ToCharArray()));
                         }
 
                         Loc.Save(Output);
@@ -340,14 +340,6 @@ namespace SSXModManagerWinForm.ModSystem
                         ListLines.RemoveAll(string.IsNullOrWhiteSpace);
 
                         File.WriteAllLines(Output, ListLines.ToArray());
-                    }
-                    else if (Instructions[i].Type == "ssxtricky music insert")
-                    {
-
-                    }
-                    else if (Instructions[i].Type == "ssxtricky playlist insert")
-                    {
-
                     }
                 }
 

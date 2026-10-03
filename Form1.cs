@@ -125,13 +125,35 @@ namespace SSXModManagerWinForm
             for (int i = 0; i < FullList.Length; i++)
             {
                 var TempInfo = GameInfo.LoadJsonPath(FullList[i] + "\\GameInfo.json");
-                if (TempInfo.Game != "")
+                bool Valid = false;
+
+                //Check Game and Extract Version
+                if(TempInfo.Game == "SSX OG" && TempInfo.Version=="1")
+                {
+                    Valid = true;
+                }
+
+                if (TempInfo.Game == "SSX Tricky" && TempInfo.Version == "1")
+                {
+                    Valid = true;
+                }
+
+                if (TempInfo.Game == "SSX 3" && TempInfo.Version == "1")
+                {
+                    Valid = true;
+                }
+
+                if (Valid)
                 {
                     TempInfo.GameDirectory = GamesFolders + Path.GetFileName(FullList[i]);
                     TempInfo.BackupDirectory = Backup + Path.GetFileName(FullList[i]);
                     TempInfo.ModDirectory = ModsFolders + Path.GetFileName(FullList[i]);
                     gameInfos.Add(TempInfo);
                     GameSelection.Items.Add(TempInfo.Game);
+                }
+                else
+                {
+                    MessageBox.Show(TempInfo.Game + " Using Old Extract Version Please Reimport Game");
                 }
             }
         }

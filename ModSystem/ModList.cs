@@ -41,6 +41,10 @@ namespace SSXModManagerWinForm.ModSystem
 
                         modItems.Add(modItem);
                     }
+                    else
+                    {
+                        MessageBox.Show(modItem.modInfo.Name + " Requires New Version Of Mod Manager");
+                    }
                 }
 
             }
