@@ -31,7 +31,7 @@ namespace SSXModManagerWinForm.Utilities
                 crc ^= word;
             }
 
-            return crc.ToString("X");
+            return crc.ToString("X8");
         }
 
         public static string CalculateCRC32(string filePath)
