@@ -50,6 +50,10 @@ namespace SSXModManagerWinForm.ModSystem
             {
                 ExtractSSX3PS2(LoadPath, true);
             }
+            else if (crc == "81A58DFF")
+            {
+                ExtractSSX3July172003PreviewPS2(LoadPath, true);
+            }
             else
             {
                 throw new Exception("Currently Unsupported Iso");
@@ -77,6 +81,10 @@ namespace SSXModManagerWinForm.ModSystem
             else if (crc == "8FFF00D")
             {
                 ExtractSSX3PS2(LoadDirectory, false);
+            }
+            else if (crc == "81A58DFF")
+            {
+                ExtractSSX3July172003PreviewPS2(LoadDirectory, false);
             }
             else
             {
@@ -574,6 +582,107 @@ namespace SSXModManagerWinForm.ModSystem
             gameInfo.GameVersion = "NTSC";
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_207.72";
+            gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+            SaveBackupTimestamps(BackupGameFolder);
+
+            //Extract to Active Game Folder
+            Console.WriteLine("Copying Game to Active Folder");
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
+        }
+
+        public static void ExtractSSX3July172003PreviewPS2(string LoadPath, bool disk)
+        {
+            Console.WriteLine("SSX 3 July 17, 2003 PS2 Detected");
+            Console.WriteLine("Generating Folders and Clearing Old Files");
+            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
+            string BackupGameFolder = Backup + "\\SSX 3 July 17 2003 Preview PS2\\";
+            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
+            string GameFolder = GamesFolders + "\\SSX 3 July 17 2003 Preview PS2\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = ModsFolders + "\\SSX 3 July 17 2003 Preview PS2\\";
+
+            if (!Directory.Exists(BackupGameFolder))
+            {
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            else
+            {
+                Directory.Delete(BackupGameFolder, true);
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            if (!Directory.Exists(GameFolder))
+            {
+                Directory.CreateDirectory(GameFolder);
+            }
+            else
+            {
+                Directory.Delete(GameFolder, true);
+                Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
+            }
+
+            //Extract to Backup
+            Console.WriteLine("Starting Disk Extracting");
+            if (disk)
+            {
+                ExtractDisk(LoadPath, BackupGameFolder);
+            }
+            else
+            {
+                SyncFolder(LoadPath, BackupGameFolder);
+            }
+
+            Console.WriteLine("Deleting Padding Files");
+            if (File.Exists(BackupGameFolder + "\\PAD1.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD1.000");
+            }
+            if (File.Exists(BackupGameFolder + "\\PAD2.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD2.000");
+            }
+
+            //HostSF
+            Console.WriteLine("Patching Elf File");
+            string ElfPath = BackupGameFolder + "\\SLUS_207.72";
+            using (Stream stream = File.Open(ElfPath, FileMode.Open))
+            {
+                stream.Position = 0x3a3778;
+                StreamUtil.WriteString(stream, "host0:\\", 8);
+                stream.Position = 0x3a6904;
+                StreamUtil.WriteString(stream, "host0:\\", 8);
+                stream.Position = 0x3f0e08;
+                StreamUtil.WriteString(stream, "host0:\\", 8);
+
+                stream.Position = 0x3fdfd0;
+                StreamUtil.WriteString(stream, "host:", 8);
+                stream.Position = 0x3fe078;
+                StreamUtil.WriteString(stream, "host:", 8);
+
+                stream.Position = 0x40c118;
+                StreamUtil.WriteString(stream, "", 8);
+                stream.Position = 0x40d938;
+                StreamUtil.WriteString(stream, "", 8);
+
+                stream.Position = 0x40d988;
+                StreamUtil.WriteString(stream, "host0:\\", 8);
+                stream.Position = 0x40d990;
+                StreamUtil.WriteString(stream, "host0:\\", 8);
+            }
+
+
+            //Rename Elf to avoid conflicts
+            File.Move(BackupGameFolder + "\\SLUS_207.72", BackupGameFolder + "\\SSX 3 July 17 2003 Preview.elf");
+
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.Game = "SSX 3";
+            gameInfo.Version = "1";
+            gameInfo.GameVersion = "July 17, 2003 Preview";
+            gameInfo.Console = "PS2";
+            gameInfo.Elf = "SSX 3 July 17 2003 Preview.elf";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
             SaveBackupTimestamps(BackupGameFolder);
 
