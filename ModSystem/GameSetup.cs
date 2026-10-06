@@ -575,13 +575,14 @@ namespace SSXModManagerWinForm.ModSystem
             File.Delete(BackupGameFolder + "DATA\\AUDIO\\AUDIO.BIG");
 
             //Extract
+            File.Move(BackupGameFolder + "\\SLUS_207.72", BackupGameFolder + "\\SSX 3 NTSC.elf");
 
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
             gameInfo.Version = "1";
             gameInfo.GameVersion = "NTSC";
             gameInfo.Console = "PS2";
-            gameInfo.Elf = "SLUS_207.72";
+            gameInfo.Elf = "SSX 3 NTSC.elf";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
             SaveBackupTimestamps(BackupGameFolder);
 
