@@ -92,11 +92,11 @@ namespace SSXModManagerWinForm.ModSystem
         public static void ExtractSSXOGPS2(string LoadPath, bool disk)
         {
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + "\\SSX OG\\";
+            string BackupGameFolder = Backup + "\\SSX OG PS2 NTSC\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + "\\SSX OG\\";
+            string GameFolder = GamesFolders + "\\SSX OG PS2 NTSC\\";
             string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
-            string ModFolder = ModsFolders + "\\SSX OG\\";
+            string ModFolder = ModsFolders + "\\SSX OG PS2 NTSC\\";
 
             if (!Directory.Exists(BackupGameFolder))
             {
@@ -213,6 +213,7 @@ namespace SSXModManagerWinForm.ModSystem
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX OG";
             gameInfo.Version = "1";
+            gameInfo.GameVersion = "NTSC";
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_200.95";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
@@ -228,11 +229,11 @@ namespace SSXModManagerWinForm.ModSystem
             Console.WriteLine("SSX Tricky PS2 Detected");
             Console.WriteLine("Generating Folders");
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + "\\SSX Tricky\\";
+            string BackupGameFolder = Backup + "\\SSX Tricky NTSC PS2\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + "\\SSX Tricky\\";
+            string GameFolder = GamesFolders + "\\SSX Tricky NTSC PS2\\";
             string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
-            string ModFolder = ModsFolders + "\\SSX Tricky\\";
+            string ModFolder = ModsFolders + "\\SSX Tricky NTSC PS2\\";
 
             if (!Directory.Exists(BackupGameFolder))
             {
@@ -361,6 +362,7 @@ namespace SSXModManagerWinForm.ModSystem
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX Tricky";
             gameInfo.Version = "1";
+            gameInfo.GameVersion = "NTSC";
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_203.26";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
@@ -377,11 +379,11 @@ namespace SSXModManagerWinForm.ModSystem
             Console.WriteLine("SSX 3 PS2 Detected");
             Console.WriteLine("Generating Folders and Clearing Old Files");
             string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
-            string BackupGameFolder = Backup + "\\SSX 3\\";
+            string BackupGameFolder = Backup + "\\SSX 3 NTSC PS2\\";
             string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
-            string GameFolder = GamesFolders + "\\SSX 3\\";
+            string GameFolder = GamesFolders + "\\SSX 3 NTSC PS2\\";
             string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
-            string ModFolder = ModsFolders + "\\SSX 3\\";
+            string ModFolder = ModsFolders + "\\SSX 3 NTSC PS2\\";
 
             if (!Directory.Exists(BackupGameFolder))
             {
@@ -569,6 +571,7 @@ namespace SSXModManagerWinForm.ModSystem
             GameInfo gameInfo = new GameInfo();
             gameInfo.Game = "SSX 3";
             gameInfo.Version = "1";
+            gameInfo.GameVersion = "NTSC";
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SLUS_207.72";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");

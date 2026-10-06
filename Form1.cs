@@ -9,7 +9,7 @@ namespace SSXModManagerWinForm
     {
         ModList ModList = new ModList();
         ModZipFolder ModZipFolder = new ModZipFolder();
-        string Backup = AppDomain.CurrentDomain.BaseDirectory + "Backup\\";
+        string BackupFolders = AppDomain.CurrentDomain.BaseDirectory + "Backup\\";
         string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "Game\\";
         string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "Mods\\";
         public List<GameInfo> gameInfos = new List<GameInfo>();
@@ -31,7 +31,6 @@ namespace SSXModManagerWinForm
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ConsoleSelection.SelectedIndex = 0;
             GenerateMissingInfo();
             CheckAddedGames();
             if (gameInfos.Count != 0)
@@ -42,9 +41,9 @@ namespace SSXModManagerWinForm
 
         private void GenerateMissingInfo()
         {
-            if (!Directory.Exists(Backup))
+            if (!Directory.Exists(BackupFolders))
             {
-                Directory.CreateDirectory(Backup);
+                Directory.CreateDirectory(BackupFolders);
             }
             if (!Directory.Exists(GamesFolders))
             {
@@ -115,11 +114,11 @@ namespace SSXModManagerWinForm
 
         public void CheckAddedGames()
         {
-            if (!Directory.Exists(GamesFolders))
+            if (!Directory.Exists(BackupFolders))
             {
                 return;
             }
-            var FullList = Directory.GetDirectories(GamesFolders);
+            var FullList = Directory.GetDirectories(BackupFolders);
             gameInfos = new List<GameInfo>();
             GameSelection.Items.Clear();
             for (int i = 0; i < FullList.Length; i++)
@@ -146,10 +145,10 @@ namespace SSXModManagerWinForm
                 if (Valid)
                 {
                     TempInfo.GameDirectory = GamesFolders + Path.GetFileName(FullList[i]);
-                    TempInfo.BackupDirectory = Backup + Path.GetFileName(FullList[i]);
+                    TempInfo.BackupDirectory = BackupFolders + Path.GetFileName(FullList[i]);
                     TempInfo.ModDirectory = ModsFolders + Path.GetFileName(FullList[i]);
                     gameInfos.Add(TempInfo);
-                    GameSelection.Items.Add(TempInfo.Game);
+                    GameSelection.Items.Add(TempInfo.Game + " " + TempInfo.GameVersion + " " + TempInfo.Console);
                 }
                 else
                 {
@@ -259,20 +258,23 @@ namespace SSXModManagerWinForm
         {
             if (GameSelection.SelectedIndex != -1)
             {
-                if (File.Exists(AppSettings.PCSX2Path))
+                if (gameInfos[SelectedGame].Console == "PS2")
                 {
-                    //Apply Any Per Game Fixes
-                    string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
-                    if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
+                    if (File.Exists(AppSettings.PCSX2Path))
                     {
-                        PerGameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
-                    }
+                        //Apply Any Per Game Fixes
+                        string CRC = CRCCalculator.CalculateCRC32(gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf);
+                        if (!File.Exists(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini"))
+                        {
+                            PerGameSettings.GenerateStandardSettings(AppSettings.PCSX2DataPath + "\\gamesettings\\" + CRC + ".ini");
+                        }
 
-                    Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
-                }
-                else
-                {
-                    MessageBox.Show("Missing Emulator");
+                        Process.Start(AppSettings.PCSX2Path, "-elf \"" + gameInfos[SelectedGame].GameDirectory + "\\" + gameInfos[SelectedGame].Elf + "\"");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Emulator");
+                    }
                 }
             }
             else

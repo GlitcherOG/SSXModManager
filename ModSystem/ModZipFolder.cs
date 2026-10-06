@@ -408,6 +408,8 @@ namespace SSXModManagerWinForm.ModSystem
                 string LoadCheats = File.ReadAllText(CheatPath);
 
                 File.AppendAllText(PCSX2CheatPath, LoadCheats + "\n");
+
+                File.Delete(CheatPath);
             }
         }
 
@@ -416,6 +418,7 @@ namespace SSXModManagerWinForm.ModSystem
             if (Directory.Exists(ModTextures))
             {
                 CopyDirectory(ModTextures, PCSX2TexturePath, true);
+                Directory.Delete(ModTextures, true);
             }
         }
 

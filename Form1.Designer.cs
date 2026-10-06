@@ -33,7 +33,6 @@
             MoveModUp = new Button();
             RefreshModButton = new Button();
             hScrollBar1 = new HScrollBar();
-            ConsoleSelection = new ToolStripComboBox();
             GameSelection = new ToolStripComboBox();
             toolStripSeparator1 = new ToolStripSeparator();
             LaunchGameButton = new ToolStripButton();
@@ -106,21 +105,12 @@
             hScrollBar1.Size = new Size(80, 17);
             hScrollBar1.TabIndex = 0;
             // 
-            // ConsoleSelection
-            // 
-            ConsoleSelection.Alignment = ToolStripItemAlignment.Right;
-            ConsoleSelection.DropDownStyle = ComboBoxStyle.DropDownList;
-            ConsoleSelection.Enabled = false;
-            ConsoleSelection.Items.AddRange(new object[] { "PS2" });
-            ConsoleSelection.Name = "ConsoleSelection";
-            ConsoleSelection.Size = new Size(121, 25);
-            // 
             // GameSelection
             // 
             GameSelection.Alignment = ToolStripItemAlignment.Right;
             GameSelection.DropDownStyle = ComboBoxStyle.DropDownList;
             GameSelection.Name = "GameSelection";
-            GameSelection.Size = new Size(121, 25);
+            GameSelection.Size = new Size(200, 25);
             GameSelection.SelectedIndexChanged += GameSelection_SelectedIndexChanged;
             // 
             // toolStripSeparator1
@@ -142,7 +132,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { ConsoleSelection, GameSelection, toolStripSeparator1, LaunchGameButton, toolStripSeparator2, ApplyModsButton, toolStripButton1 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { GameSelection, toolStripSeparator1, LaunchGameButton, toolStripSeparator2, ApplyModsButton, toolStripButton1 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1268, 25);
@@ -392,7 +382,6 @@
         private Button MoveModUp;
         private Button RefreshModButton;
         private HScrollBar hScrollBar1;
-        private ToolStripComboBox ConsoleSelection;
         private ToolStripComboBox GameSelection;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton LaunchGameButton;

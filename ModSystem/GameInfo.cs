@@ -9,6 +9,7 @@ namespace SSXModManagerWinForm.ModSystem
     {
         public string Game = "";
         public string Version = "";
+        public string GameVersion = "";
         public string Console = "";
         public string Elf = "";
         [JsonIgnore]
