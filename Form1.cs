@@ -147,6 +147,11 @@ namespace SSXModManagerWinForm
                     Valid = true;
                 }
 
+                if (TempInfo.Game == "SSX 3" && TempInfo.GameVersion == "PAL 2.0" && TempInfo.Version == "1")
+                {
+                    Valid = true;
+                }
+
                 if (TempInfo.Game == "SSX 3" && TempInfo.GameVersion == "July 17, 2003 Preview" && TempInfo.Version == "1")
                 {
                     Valid = true;

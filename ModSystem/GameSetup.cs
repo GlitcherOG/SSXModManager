@@ -54,6 +54,10 @@ namespace SSXModManagerWinForm.ModSystem
             {
                 ExtractSSX3PAL1PS2(LoadPath, true);
             }
+            else if (crc == "2326C5C8")
+            {
+                ExtractSSX3PAL2PS2(LoadPath, true);
+            }
             else if (crc == "81A58DFF")
             {
                 ExtractSSX3July172003PreviewPS2(LoadPath, true);
@@ -89,6 +93,10 @@ namespace SSXModManagerWinForm.ModSystem
             else if (crc == "CE942B2A")
             {
                 ExtractSSX3PAL1PS2(LoadDirectory, false);
+            }
+            else if (crc == "2326C5C8")
+            {
+                ExtractSSX3PAL2PS2(LoadDirectory, false);
             }
             else if (crc == "81A58DFF")
             {
@@ -800,6 +808,218 @@ namespace SSXModManagerWinForm.ModSystem
             gameInfo.GameVersion = "PAL 1.0";
             gameInfo.Console = "PS2";
             gameInfo.Elf = "SSX 3 PAL 1.elf";
+            gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
+            SaveBackupTimestamps(BackupGameFolder);
+
+            //Extract to Active Game Folder
+            Console.WriteLine("Copying Game to Active Folder");
+            CopyFilesRecursively(BackupGameFolder, GameFolder);
+        }
+
+        public static void ExtractSSX3PAL2PS2(string LoadPath, bool disk)
+        {
+            Console.WriteLine("SSX 3 PS2 Detected");
+            Console.WriteLine("Generating Folders and Clearing Old Files");
+            string Backup = AppDomain.CurrentDomain.BaseDirectory + "\\Backup\\";
+            string BackupGameFolder = Backup + "\\SSX 3 PAL 2 PS2\\";
+            string GamesFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Game\\";
+            string GameFolder = GamesFolders + "\\SSX 3 PAL 2 PS2\\";
+            string ModsFolders = AppDomain.CurrentDomain.BaseDirectory + "\\Mods\\";
+            string ModFolder = ModsFolders + "\\SSX 3 PAL 2 PS2\\";
+
+            if (!Directory.Exists(BackupGameFolder))
+            {
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            else
+            {
+                Directory.Delete(BackupGameFolder, true);
+                Directory.CreateDirectory(BackupGameFolder);
+            }
+            if (!Directory.Exists(GameFolder))
+            {
+                Directory.CreateDirectory(GameFolder);
+            }
+            else
+            {
+                Directory.Delete(GameFolder, true);
+                Directory.CreateDirectory(GameFolder);
+            }
+            if (!Directory.Exists(ModFolder))
+            {
+                Directory.CreateDirectory(ModFolder);
+            }
+
+            //Extract to Backup
+            Console.WriteLine("Starting Disk Extracting");
+            if (disk)
+            {
+                ExtractDisk(LoadPath, BackupGameFolder);
+            }
+            else
+            {
+                SyncFolder(LoadPath, BackupGameFolder);
+            }
+
+            Console.WriteLine("Deleting Padding Files");
+            if (File.Exists(BackupGameFolder + "\\PAD0.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD0.000");
+            }
+            if (File.Exists(BackupGameFolder + "\\PAD1.000"))
+            {
+                File.Delete(BackupGameFolder + "\\PAD1.000");
+            }
+
+            //HostSF
+            Console.WriteLine("Patching Elf File");
+            string ElfPath = BackupGameFolder + "\\SLES_516.97";
+            using (Stream stream = File.Open(ElfPath, FileMode.Open))
+            {
+                stream.Position = 0x37A5E8;
+                StreamUtil.WriteString(stream, "host0:", 8);
+                stream.Position = 0x380DD0;
+                StreamUtil.WriteString(stream, "host:", 8);
+
+                stream.Position = 0x3A33F0;
+                StreamUtil.WriteString(stream, "", 8);
+
+                stream.Position = 0x3A48B8;
+                StreamUtil.WriteString(stream, "", 8);
+
+                stream.Position = 0x38E3D8;
+                StreamUtil.WriteString(stream, "host:", 8);
+
+                //Character Icon Paths
+                stream.Position = 0x35B098;
+                StreamUtil.WriteString(stream, "data/char/mobytxp/moby_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/kaoritxp/kaori_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/allegtxp/arielle_icons.ssh", 48);
+                StreamUtil.WriteString(stream, "data/char/mactxp/mac_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/zoetxp/zoe_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/grifftxp/grommet_icons.ssh", 48);
+                StreamUtil.WriteString(stream, "data/char/elisetxp/elise_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/natetxp/rocco_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/psymotxp/psymon_icons.ssh", 40);
+                StreamUtil.WriteString(stream, "data/char/viggotxp/deiter_icons.ssh", 40);
+
+                ////Music Paths
+                stream.Position = 0x37B4F8;
+                StreamUtil.WriteString(stream, "audio/music/", 16);
+                StreamUtil.WriteString(stream, "audio/music/", 16);
+
+                stream.Position = 0x3833D8;
+                StreamUtil.WriteString(stream, "data/audio/LoadingScreen.bnk", 56);
+            }
+
+            //Correct Bolt File
+            Console.WriteLine("Patching Bolt File");
+            var TempboltPS2 = new BoltHandler();
+            TempboltPS2.load(BackupGameFolder + "DATA\\CHAR\\BOLTPS2.DAT");
+            for (int i = 0; i < TempboltPS2.characters.Count; i++)
+            {
+                var TempCharacter = TempboltPS2.characters[i];
+                for (int a = 0; a < TempCharacter.entries.Count; a++)
+                {
+                    var TempEntries = TempCharacter.entries[a];
+
+                    if (TempEntries.ModelPath != null)
+                    {
+                        if (TempEntries.ModelPath.ToLower().Contains(".big|"))
+                        {
+                            TempEntries.ModelPath = TempEntries.ModelPath.ToLower().Replace(".big|", "/");
+                        }
+                    }
+
+                    if (TempEntries.TexturePath != null)
+                    {
+                        if (TempEntries.TexturePath.ToLower().Contains(".big|"))
+                        {
+                            TempEntries.TexturePath = TempEntries.TexturePath.ToLower().Replace(".big|", "/");
+                        }
+                    }
+                    TempCharacter.entries[a] = TempEntries;
+                }
+                TempboltPS2.characters[i] = TempCharacter;
+            }
+            TempboltPS2.Save(BackupGameFolder + "DATA\\CHAR\\BOLTPS2.DAT");
+            //Extract Character Textures
+            Console.WriteLine("Extracting Character Textures and Models");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG", BackupGameFolder + "DATA\\CHAR\\ALLEGTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG", BackupGameFolder + "DATA\\CHAR\\ELISETXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG", BackupGameFolder + "DATA\\CHAR\\GRIFFTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG", BackupGameFolder + "DATA\\CHAR\\KAORITXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG", BackupGameFolder + "DATA\\CHAR\\MACTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG", BackupGameFolder + "DATA\\CHAR\\MOBYTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG", BackupGameFolder + "DATA\\CHAR\\NATETXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG", BackupGameFolder + "DATA\\CHAR\\OTHERTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG", BackupGameFolder + "DATA\\CHAR\\PSYMOTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG", BackupGameFolder + "DATA\\CHAR\\VIGGOTXP");
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG", BackupGameFolder + "DATA\\CHAR\\ZOETXP");
+            //Extract Character Models
+            BIG.Extract(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG", BackupGameFolder + "DATA\\CHAR\\MDLPS2");
+
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ALLEGTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ELISETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\GRIFFTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\KAORITXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MACTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MOBYTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\NATETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\OTHERTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\PSYMOTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\VIGGOTXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\ZOETXP.BIG");
+            File.Delete(BackupGameFolder + "DATA\\CHAR\\MDLPS2.BIG");
+
+            //Extract Music Files
+            Console.WriteLine("Extracting Music");
+            if (!Directory.Exists(BackupGameFolder + "DATA\\AUDIO\\MUSIC"))
+            {
+                Directory.CreateDirectory(BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+            }
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\MUSIC.BIG", BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\MUSIC2.BIG", BackupGameFolder + "DATA\\AUDIO\\MUSIC");
+
+            var Files = Directory.GetFiles(BackupGameFolder + "DATA\\AUDIO\\MUSIC", "*.*", SearchOption.AllDirectories);
+            for (int i = 0; i < Files.Length; i++)
+            {
+                File.Move(Files[i], BackupGameFolder + "DATA\\AUDIO\\MUSIC\\" + Path.GetFileName(Files[i]));
+            }
+
+            Directory.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC\\DATA", true);
+
+            //Fix Music Inf
+            var MusicText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\MUSIC.INF");
+            MusicText = MusicText.Replace("BASEPATH = \"|data\\audio\\\"", "BASEPATH = \"\"");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\MUSIC.INF", MusicText);
+
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC.BIG");
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\MUSIC2.BIG");
+
+            //Extract Audio Files
+            Console.WriteLine("Extracting Audio");
+            BIG.Extract(BackupGameFolder + "DATA\\AUDIO\\AUDIO.BIG", BackupGameFolder);
+
+            var BanksText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\BANKS.INF");
+            BanksText = BanksText.Replace("BASEPATH = \"audio/audio.big|data\\audio\\\"", "BASEPATH = \"audio/\"");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\BANKS.INF", BanksText);
+
+            var CROWDText = File.ReadAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF");
+            CROWDText = CROWDText.Replace("|data\\audio\\", "");
+            File.WriteAllText(BackupGameFolder + "DATA\\CONFIG\\CROWD.INF", CROWDText);
+
+            File.Delete(BackupGameFolder + "DATA\\AUDIO\\AUDIO.BIG");
+
+            //Extract
+            File.Move(BackupGameFolder + "\\SLES_516.97", BackupGameFolder + "\\SSX 3 PAL 2.elf");
+
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.Game = "SSX 3";
+            gameInfo.Version = "1";
+            gameInfo.GameVersion = "PAL 2.0";
+            gameInfo.Console = "PS2";
+            gameInfo.Elf = "SSX 3 PAL 2.elf";
             gameInfo.CreateJson(BackupGameFolder + "\\GameInfo.json");
             SaveBackupTimestamps(BackupGameFolder);
 
